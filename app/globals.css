@@ -1,26 +1,47 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #020617;
+  --foreground: #f8fafc;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: 'DM Sans', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  --animate-pulse-slow: pulse-slow 8s ease-in-out infinite alternate;
+  --animate-pulse-slow-reverse: pulse-slow-reverse 10s ease-in-out infinite alternate-reverse;
+  --animate-fade-up: fade-up 0.5s ease both;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes pulse-slow {
+  from { transform: scale(1) translate(0, 0); opacity: 0.7; }
+  to   { transform: scale(1.1) translate(2%, 2%); opacity: 1; }
+}
+
+@keyframes pulse-slow-reverse {
+  from { transform: scale(1) translate(0, 0); opacity: 0.7; }
+  to   { transform: scale(1.1) translate(-2%, -2%); opacity: 1; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'DM Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
 }
