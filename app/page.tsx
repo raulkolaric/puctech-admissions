@@ -95,6 +95,18 @@ export default function Home() {
     }
 
     setErrors(newErrors);
+    
+    // Scroll to top or first error
+    const firstError = Object.keys(newErrors)[0];
+    if (firstError) {
+      setTimeout(() => {
+        const el = document.getElementById(firstError);
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 50);
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
     return Object.keys(newErrors).length === 0;
   }
 
@@ -439,7 +451,7 @@ export default function Home() {
                           className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border transition-all ${
                             areasOperacionais.includes(area)
                               ? "bg-[rgba(0,212,255,0.15)] border-[#00d4ff]"
-                              : (errors.areasOperacionais ? "bg-red-500/[0.04] border-red-500/50" : "bg-white/[0.03] border-white/10 group-hover/chk:border-white/30")
+                              : (errors.areasOperacionais ? "bg-red-500/[0.04] border-red-500/50" : "bg-white/[0.03] border-white/30 group-hover/chk:border-white/40")
                           }`}
                         >
                           {areasOperacionais.includes(area) && (
@@ -477,7 +489,7 @@ export default function Home() {
                   setStep((s) => s - 1); 
                   setStatus("idle"); 
                   setErrors({});
-                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" }), 10);
                 }}
                 className="px-6 py-[13px] rounded-[10px] text-[0.88rem] font-semibold tracking-[0.08em] uppercase border border-white/10 text-[#94a3b8] transition-all duration-200 hover:border-white/20 hover:text-white"
               >
@@ -492,7 +504,6 @@ export default function Home() {
                   if (validateStep()) {
                     setStep((s) => s + 1);
                     setErrors({});
-                    window.scrollTo({ top: 0, behavior: "smooth" });
                   }
                 }}
                 className="group relative flex-1 px-6 py-[15px] flex items-center justify-center gap-[10px] overflow-hidden rounded-[10px] font-sans text-[0.88rem] font-semibold tracking-[0.08em] uppercase text-white transition-all duration-[250ms] disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:-translate-y-px hover:shadow-[0_8px_24px_rgba(0,85,255,0.35),0_0_0_1px_rgba(0,212,255,0.15)] active:translate-y-0"
@@ -513,7 +524,6 @@ export default function Home() {
                 onClick={() => {
                   if (validateStep()) {
                     handleSubmit();
-                    window.scrollTo({ top: 0, behavior: "smooth" });
                   }
                 }}
                 className="group relative flex-1 px-6 py-[15px] flex items-center justify-center gap-[10px] overflow-hidden rounded-[10px] font-sans text-[0.88rem] font-semibold tracking-[0.08em] uppercase text-white transition-all duration-[250ms] disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:-translate-y-px hover:shadow-[0_8px_24px_rgba(0,85,255,0.35),0_0_0_1px_rgba(0,212,255,0.15)] active:translate-y-0"
