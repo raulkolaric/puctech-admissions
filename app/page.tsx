@@ -4,7 +4,7 @@ import { useState } from "react";
 
 type Status = "idle" | "loading" | "success" | "error";
 
-const TOTAL_STEPS = 4;
+const TOTAL_STEPS = 5;
 
 export default function Home() {
   /* ── Step state ── */
@@ -29,6 +29,8 @@ export default function Home() {
   const [habilidades, setHabilidades] = useState("");
   const [softHardSkills, setSoftHardSkills] = useState("");
   const [tempoLivre, setTempoLivre] = useState("");
+
+  const [expectativas, setExpectativas] = useState("");
   const [areasOperacionais, setAreasOperacionais] = useState<string[]>([]);
 
   const [status, setStatus] = useState<Status>("idle");
@@ -52,7 +54,8 @@ export default function Home() {
       case 1: return nome.trim() !== "" && email.trim() !== "" && dataNascimento !== "";
       case 2: return ra.trim() !== "" && curso !== "" && ano !== "" && telefone.trim() !== "";
       case 3: return motivoPuc.trim() !== "" && areasInteresse.trim() !== "" && projetos.trim() !== "" && experiencia.trim() !== "";
-      case 4: return habilidades.trim() !== "" && softHardSkills.trim() !== "" && tempoLivre.trim() !== "" && areasOperacionais.length > 0;
+      case 4: return habilidades.trim() !== "" && softHardSkills.trim() !== "" && tempoLivre.trim() !== "";
+      case 5: return expectativas.trim() !== "" && areasOperacionais.length > 0;
       default: return false;
     }
   }
@@ -73,6 +76,7 @@ export default function Home() {
           projetos, experiencia, habilidades,
           soft_hard_skills: softHardSkills,
           tempo_livre: tempoLivre,
+          expectativas,
           areas_operacionais: areasOperacionais,
         }),
       });
@@ -88,7 +92,7 @@ export default function Home() {
       setRa(""); setCurso(""); setAno(""); setTelefone("");
       setMotivoPuc(""); setAreasInteresse(""); setProjetos(""); setExperiencia("");
       setHabilidades(""); setSoftHardSkills(""); setTempoLivre("");
-      setAreasOperacionais([]);
+      setExpectativas(""); setAreasOperacionais([]);
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Erro inesperado.");
       setStatus("error");
@@ -101,6 +105,7 @@ export default function Home() {
     2: { title: "Universidade", subtitle: "Informações sobre seu vínculo acadêmico." },
     3: { title: "Áreas de Interesse", subtitle: "OBS: Se não tiver o que responder, escreva \"N/A\"." },
     4: { title: "Habilidades", subtitle: "Mostre suas competências e o que te motiva." },
+    5: { title: "Expectativas", subtitle: "Última etapa! Queremos saber suas expectativas." },
   };
 
   return (
@@ -310,6 +315,15 @@ export default function Home() {
 
                 <FieldWrapper label="O que você gosta de fazer no tempo livre?" htmlFor="tempo_livre">
                   <textarea id="tempo_livre" required value={tempoLivre} onChange={(e) => setTempoLivre(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
+                </FieldWrapper>
+              </>
+            )}
+
+            {/* STEP 5 — Expectativas */}
+            {step === 5 && (
+              <>
+                <FieldWrapper label="Quais são suas expectativas ao entrar na PUC Tech?" htmlFor="expectativas">
+                  <textarea id="expectativas" required placeholder="O que você espera aprender, conquistar ou vivenciar como membro da liga?" value={expectativas} onChange={(e) => setExpectativas(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
                 {/* Checkboxes */}

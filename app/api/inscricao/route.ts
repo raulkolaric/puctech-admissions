@@ -18,6 +18,7 @@ interface FormPayload {
   habilidades: string;
   soft_hard_skills: string;
   tempo_livre: string;
+  expectativas: string;
   areas_operacionais: string[];
 }
 
@@ -40,6 +41,7 @@ function validate(body: unknown): body is FormPayload {
     typeof b.habilidades === "string" && b.habilidades.trim() !== "" &&
     typeof b.soft_hard_skills === "string" && b.soft_hard_skills.trim() !== "" &&
     typeof b.tempo_livre === "string" && b.tempo_livre.trim() !== "" &&
+    typeof b.expectativas === "string" && b.expectativas.trim() !== "" &&
     Array.isArray(b.areas_operacionais) && b.areas_operacionais.length > 0
   );
 }
@@ -100,7 +102,7 @@ export async function POST(req: NextRequest) {
   });
 
   const tab = process.env.GOOGLE_SHEET_TAB;
-  const range = tab ? `'${tab}'!A:Q` : "A:Q";
+  const range = tab ? `'${tab}'!A:R` : "A:R";
 
   console.log("[sheets] tab:", tab ?? "(using first sheet)");
   console.log("[sheets] range:", range);
@@ -129,6 +131,7 @@ export async function POST(req: NextRequest) {
           body.habilidades.trim(),
           body.soft_hard_skills.trim(),
           body.tempo_livre.trim(),
+          body.expectativas.trim(),
           body.areas_operacionais.join(", "), // array back to comma string
         ]],
       },
