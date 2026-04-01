@@ -54,7 +54,12 @@ export async function POST(req: NextRequest) {
     timeZone: "America/Sao_Paulo",
   });
 
-  const range = `${process.env.GOOGLE_SHEET_TAB ?? "Sheet1"}!A:F`;
+  const tab = process.env.GOOGLE_SHEET_TAB;
+  const range = tab ? `'${tab}'!A:F` : "A:F";
+
+  console.log("[sheets] tab:", tab ?? "(using first sheet)");
+  console.log("[sheets] range:", range);
+  console.log("[sheets] sheetId:", process.env.GOOGLE_SHEET_ID);
 
   try {
     await sheets.spreadsheets.values.append({
