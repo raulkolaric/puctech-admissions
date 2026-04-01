@@ -61,9 +61,32 @@ export async function POST(req: NextRequest) {
   }
 
   // 3. Authenticate with Google via Service Account
+  //    The private key can arrive in many forms depending on how the hosting
+  //    platform stores env vars (double-escaped, JSON-stringified, etc.).
+  let rawKey = process.env.GOOGLE_PRIVATE_KEY ?? "";
+
+  // Strip surrounding quotes that some dashboards add
+  if (rawKey.startsWith('"') && rawKey.endsWith('"')) {
+    rawKey = rawKey.slice(1, -1);
+  }
+
+  // Replace literal \n (two chars: backslash + n) with real newlines
+  const privateKey = rawKey.replace(/\\n/g, "\n");
+
+  // ── Debug: key diagnostics (never log the actual key) ──
+  console.log("[auth] email present:", !!process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL);
+  console.log("[auth] raw key length:", rawKey.length);
+  console.log("[auth] parsed key length:", privateKey.length);
+  console.log("[auth] starts with -----BEGIN:", privateKey.startsWith("-----BEGIN"));
+  console.log("[auth] ends with PRIVATE KEY-----:", privateKey.trimEnd().endsWith("PRIVATE KEY-----"));
+  console.log("[auth] first 30 chars:", privateKey.substring(0, 30));
+  console.log("[auth] last 30 chars:", privateKey.substring(privateKey.length - 30));
+  console.log("[auth] contains real newlines:", privateKey.includes("\n"));
+  console.log("[auth] newline count:", (privateKey.match(/\n/g) || []).length);
+
   const auth = new google.auth.JWT({
     email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-    key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    key: privateKey,
     scopes: ["https://www.googleapis.com/auth/spreadsheets"],
   });
 
