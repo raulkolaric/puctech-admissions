@@ -18,6 +18,7 @@ export default function Home() {
 
   const [ra, setRa] = useState("");
   const [curso, setCurso] = useState("");
+  const [outroCurso, setOutroCurso] = useState("");
   const [ano, setAno] = useState("");
   const [telefone, setTelefone] = useState("");
 
@@ -72,6 +73,8 @@ export default function Home() {
       else if (!/^\d{8}$/.test(ra.trim())) newErrors.ra = "O RA deve ter exatamente 8 números (ex: 00123456).";
       
       if (!curso) newErrors.curso = "Selecione um curso.";
+      else if (curso === "Outro" && !outroCurso.trim()) newErrors.outroCurso = "Informe qual seu curso.";
+
       if (!ano) newErrors.ano = "Selecione um ano/período.";
       
       const phoneDigits = telefone.replace(/\D/g, "");
@@ -105,7 +108,7 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nome, ra, curso, ano, email, telefone, instagram, data_nascimento: dataNascimento,
+          nome, ra, curso: curso === "Outro" ? outroCurso : curso, ano, email, telefone, instagram, data_nascimento: dataNascimento,
           motivo_puc: motivoPuc,
           areas_interesse: areasInteresse,
           projetos, experiencia, habilidades,
@@ -124,7 +127,7 @@ export default function Home() {
       setStatus("success");
       // Reset everything
       setNome(""); setEmail(""); setInstagram(""); setDataNascimento("");
-      setRa(""); setCurso(""); setAno(""); setTelefone("");
+      setRa(""); setCurso(""); setOutroCurso(""); setAno(""); setTelefone("");
       setMotivoPuc(""); setAreasInteresse(""); setProjetos(""); setExperiencia("");
       setHabilidades(""); setSoftHardSkills(""); setTempoLivre("");
       setExpectativas(""); setAreasOperacionais([]); setErrors({});
@@ -302,7 +305,7 @@ export default function Home() {
 
                   <FieldWrapper label="Qual seu Curso?" htmlFor="curso" error={errors.curso}>
                     <div className="relative">
-                      <select id="curso" required value={curso} onChange={(e) => setCurso(e.target.value)} className={`${selectBaseClass} ${curso ? "text-[#f8fafc]" : "text-[#475569]"}`}>
+                      <select id="curso" required value={curso} onChange={(e) => { setCurso(e.target.value); setOutroCurso(""); setErrors({}); }} className={`${selectBaseClass} ${curso ? "text-[#f8fafc]" : "text-[#475569]"}`}>
                         <option value="" disabled>Selecione seu curso</option>
                         <option value="Ciência da Computação">Ciência da Computação</option>
                         <option value="Jogos Digitais">Jogos Digitais</option>
@@ -317,6 +320,22 @@ export default function Home() {
                     </div>
                   </FieldWrapper>
                 </div>
+
+                {curso === "Outro" && (
+                  <div className="animate-fade-up">
+                    <FieldWrapper label="Qual seu outro curso?" htmlFor="outroCurso" error={errors.outroCurso}>
+                      <input 
+                        type="text" 
+                        id="outroCurso" 
+                        required 
+                        value={outroCurso} 
+                        onChange={(e) => setOutroCurso(e.target.value)} 
+                        className={inputClass} 
+                        placeholder="Nome do seu curso" 
+                      />
+                    </FieldWrapper>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-2 gap-[14px]">
                   <FieldWrapper label="Qual seu Ano/Período?" htmlFor="ano" error={errors.ano}>
