@@ -547,10 +547,10 @@ export default function Home() {
 
 /* ─── Shared style strings ─── */
 const inputClass =
-  "w-full px-4 bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-[10px] text-[#f8fafc] font-sans text-[0.93rem] outline-none transition-all duration-[250ms] placeholder:text-[#475569] hover:border-white/[0.14] focus:border-[rgba(0,212,255,0.4)] focus:bg-[rgba(0,212,255,0.04)] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.06)]";
+  "w-full px-4 bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-[10px] text-[#f8fafc] font-sans text-base outline-none transition-all duration-[250ms] placeholder:text-[#475569] hover:border-white/[0.14] focus:border-[rgba(0,212,255,0.4)] focus:bg-[rgba(0,212,255,0.04)] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.06)]";
 
 const selectBaseClass =
-  "w-full appearance-none px-4 h-[50px] pr-10 bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-[10px] font-sans text-[0.93rem] outline-none transition-all duration-[250ms] hover:border-white/[0.14] focus:border-[rgba(0,212,255,0.4)] focus:bg-[rgba(0,212,255,0.04)] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.06)] cursor-pointer [&>option]:bg-[#0f172a] [&>option]:text-[#f8fafc]";
+  "w-full appearance-none px-4 h-[50px] pr-10 bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-[10px] font-sans text-base outline-none transition-all duration-[250ms] hover:border-white/[0.14] focus:border-[rgba(0,212,255,0.4)] focus:bg-[rgba(0,212,255,0.04)] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.06)] cursor-pointer [&>option]:bg-[#0f172a] [&>option]:text-[#f8fafc]";
 
 /* ─── Sub-components ─── */
 interface FieldWrapperProps {
