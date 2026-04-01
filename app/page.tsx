@@ -243,7 +243,7 @@ export default function Home() {
                 Inscrição concluída!
               </h2>
               <p className="text-[#94a3b8] text-[0.95rem] leading-[1.7] max-w-[340px] mb-10">
-                Seus dados foram enviados com sucesso. Fique de olho no seu <strong className="text-[#f8fafc] text-[1.1rem]">email</strong> para as próximas etapas e já <strong className="text-[#f8fafc] text-[1.1rem]">reserve o seu sábado</strong> para a nossa dinâmica presencial!
+                Seus dados foram enviados com sucesso. Fique de olho no seu <strong className="text-[#f8fafc] text-[1.1rem]">email</strong> para as próximas etapas e já <strong className="text-[#f8fafc] text-[1.1rem]">reserve o seu sábado (18/04)</strong> para a nossa dinâmica presencial!
               </p>
             </div>
           ) : (
@@ -388,7 +388,7 @@ export default function Home() {
                   <textarea id="habilidades" required value={habilidades} onChange={(e) => setHabilidades(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Você tem disponibilidade para participar das reuniões semanais e eventos?" htmlFor="soft_hard_skills" error={errors.softHardSkills}>
+                <FieldWrapper label="Você tem disponibilidade para participar das reuniões semanais e eventos? (Atividades no período da tarde, e reuniões aos sábados)" htmlFor="soft_hard_skills" error={errors.softHardSkills}>
                   <textarea id="soft_hard_skills" required value={softHardSkills} onChange={(e) => setSoftHardSkills(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
