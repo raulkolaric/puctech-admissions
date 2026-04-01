@@ -149,13 +149,13 @@ export default function Home() {
   return (
     <>
       {/* ── Animated background ── */}
-      <div className="fixed inset-0 z-0 overflow-hidden">
+      <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none select-none touch-none">
         <div
-          className="absolute -top-[30%] -left-[20%] w-[70vw] h-[70vw] rounded-full animate-pulse-slow"
+          className="absolute -top-[30%] -left-[20%] w-[70vw] h-[70vw] rounded-full animate-pulse-slow will-change-transform"
           style={{ background: "radial-gradient(circle, rgba(0,85,255,0.12) 0%, transparent 70%)" }}
         />
         <div
-          className="absolute -bottom-[20%] -right-[10%] w-[50vw] h-[50vw] rounded-full animate-pulse-slow-reverse"
+          className="absolute -bottom-[20%] -right-[10%] w-[50vw] h-[50vw] rounded-full animate-pulse-slow-reverse will-change-transform"
           style={{ background: "radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%)" }}
         />
         <div
@@ -181,7 +181,7 @@ export default function Home() {
 
       {/* ── Wrapper ── */}
       <div
-        className="relative z-10 grid w-full max-w-full overflow-x-hidden min-h-screen grid-cols-1 lg:grid-cols-[1fr_520px_1fr]"
+        className="relative z-10 grid w-full overflow-x-clip min-h-screen grid-cols-1 lg:grid-cols-[1fr_520px_1fr] touch-pan-y"
       >
         {/* ───── MOBILE HEADER (visible < lg) ───── */}
         <header className="flex flex-col items-center text-center px-6 pt-10 pb-6 lg:hidden">
