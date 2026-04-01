@@ -143,11 +143,30 @@ export default function Home() {
 
       {/* ── Wrapper ── */}
       <div
-        className="relative z-10 grid w-full min-h-screen"
-        style={{ gridTemplateColumns: "1fr 520px 1fr" }}
+        className="relative z-10 grid w-full min-h-screen grid-cols-1 lg:grid-cols-[1fr_520px_1fr]"
       >
-        {/* ─────────── LEFT PANEL ─────────── */}
-        <aside className="flex flex-col justify-center px-12 py-[60px]" style={{ gridColumn: 1 }}>
+        {/* ───── MOBILE HEADER (visible < lg) ───── */}
+        <header className="flex flex-col items-center text-center px-6 pt-10 pb-6 lg:hidden">
+          <span className="flex items-center gap-[10px] font-mono text-[0.82rem] tracking-[0.18em] uppercase text-[#00d4ff] mb-6">
+            <span className="inline-block w-6 h-px bg-[#00d4ff]" />
+            PUC-TECH — Liga Acadêmica
+          </span>
+          <h1 className="text-3xl font-light leading-[1.15] tracking-[-0.02em] text-[#f8fafc]">
+            Processo Seletivo{" "}
+            <strong
+              className="font-semibold"
+              style={{
+                background: "linear-gradient(120deg,#f8fafc 30%,#00d4ff)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+              }}
+            >
+              2026
+            </strong>
+          </h1>
+        </header>
+        {/* ─────────── LEFT PANEL (desktop only) ─────────── */}
+        <aside className="hidden lg:flex flex-col justify-center px-12 py-[60px]">
           <span className="flex items-center gap-[10px] font-mono text-[0.82rem] tracking-[0.18em] uppercase text-[#00d4ff] mb-10">
             <span className="inline-block w-6 h-px bg-[#00d4ff]" />
             PUC-TECH — Liga Acadêmica
@@ -173,7 +192,7 @@ export default function Home() {
         </aside>
 
         {/* ─────────── FORM COLUMN ─────────── */}
-        <main className="flex flex-col justify-center px-10 py-10" style={{ gridColumn: 2 }}>
+        <main className="flex flex-col justify-center px-6 py-8 lg:px-10 lg:py-10">
 
           {/* Form header — changes per step */}
           <div className="mb-10 animate-fade-up" style={{ animationDelay: "0.05s" }}>
@@ -425,6 +444,13 @@ export default function Home() {
           </div>
 
         </main>
+
+        {/* ───── MOBILE FOOTER (visible < lg) ───── */}
+        <footer className="flex flex-col items-center text-center px-6 pt-4 pb-10 lg:hidden">
+          <p className="text-[0.85rem] text-[#94a3b8] leading-[1.7] max-w-[360px]">
+            Junte-se à liga de tecnologia da PUC e colabore em projetos reais, eventos e pesquisa aplicada junto a outros estudantes.
+          </p>
+        </footer>
       </div>
     </>
   );
