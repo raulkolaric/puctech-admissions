@@ -473,7 +473,12 @@ export default function Home() {
             {step > 1 && (
               <button
                 type="button"
-                onClick={() => { setStep((s) => s - 1); setStatus("idle"); setErrors({}); }}
+                onClick={() => { 
+                  setStep((s) => s - 1); 
+                  setStatus("idle"); 
+                  setErrors({});
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
                 className="px-6 py-[13px] rounded-[10px] text-[0.88rem] font-semibold tracking-[0.08em] uppercase border border-white/10 text-[#94a3b8] transition-all duration-200 hover:border-white/20 hover:text-white"
               >
                 Voltar
@@ -487,6 +492,7 @@ export default function Home() {
                   if (validateStep()) {
                     setStep((s) => s + 1);
                     setErrors({});
+                    window.scrollTo({ top: 0, behavior: "smooth" });
                   }
                 }}
                 className="group relative flex-1 px-6 py-[15px] flex items-center justify-center gap-[10px] overflow-hidden rounded-[10px] font-sans text-[0.88rem] font-semibold tracking-[0.08em] uppercase text-white transition-all duration-[250ms] disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:-translate-y-px hover:shadow-[0_8px_24px_rgba(0,85,255,0.35),0_0_0_1px_rgba(0,212,255,0.15)] active:translate-y-0"
@@ -505,7 +511,10 @@ export default function Home() {
                 type="button"
                 disabled={status === "loading"}
                 onClick={() => {
-                  if (validateStep()) handleSubmit();
+                  if (validateStep()) {
+                    handleSubmit();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }
                 }}
                 className="group relative flex-1 px-6 py-[15px] flex items-center justify-center gap-[10px] overflow-hidden rounded-[10px] font-sans text-[0.88rem] font-semibold tracking-[0.08em] uppercase text-white transition-all duration-[250ms] disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:-translate-y-px hover:shadow-[0_8px_24px_rgba(0,85,255,0.35),0_0_0_1px_rgba(0,212,255,0.15)] active:translate-y-0"
                 style={{ background: "linear-gradient(135deg,#0055ff 0%,#0099dd 100%)" }}
