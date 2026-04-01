@@ -123,6 +123,18 @@ export default function Home() {
         />
       </div>
 
+      {/* ── Progress bar (fixed top) ── */}
+      <div className="fixed top-0 left-0 right-0 z-50 h-[3px] bg-white/[0.06]">
+        <div
+          className="h-full transition-all duration-500 ease-out"
+          style={{
+            width: `${(step / TOTAL_STEPS) * 100}%`,
+            background: "linear-gradient(90deg, #0055ff 0%, #00d4ff 100%)",
+            boxShadow: "0 0 12px rgba(0,212,255,0.4), 0 0 4px rgba(0,85,255,0.6)",
+          }}
+        />
+      </div>
+
       {/* ── Wrapper ── */}
       <div
         className="relative z-10 grid w-full min-h-screen"
@@ -152,16 +164,6 @@ export default function Home() {
           <p className="text-[0.9rem] text-[#94a3b8] leading-[1.7] max-w-[320px] mb-14">
             Junte-se à liga de tecnologia da PUC e colabore em projetos reais, eventos e pesquisa aplicada junto a outros estudantes.
           </p>
-
-          {/* ── Step indicator on left panel ── */}
-          <div className="flex flex-col gap-0 mt-auto">
-            <p className="font-mono text-[0.62rem] tracking-[0.15em] uppercase text-[#475569] mb-6">
-              Progresso
-            </p>
-            {[1, 2, 3, 4].map((s) => (
-              <StepIndicatorItem key={s} stepNumber={s} label={stepMeta[s].title} current={step} />
-            ))}
-          </div>
         </aside>
 
         {/* ─────────── FORM COLUMN ─────────── */}
@@ -309,13 +311,13 @@ export default function Home() {
                 <div className="relative mb-2 group/field animate-fade-up">
                   <label className="flex items-center gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[#94a3b8] mb-3">
                     <span className="w-[5px] h-[5px] rounded-full bg-[#475569]" />
-                    Gostaria de contribuir com áreas operacionais?
+                    Você tem interesse com as áreas operacionais?
                   </label>
                   <div className="flex flex-col gap-3">
                     {[
                       "Marketing (redes sociais, comunicação e design)",
                       "Eventos (organização de oficinas, workshops, etc.)",
-                      "RH e Administrativo (gestão de pessoas e processos)",
+                      "People (gestão de pessoas e processos)",
                       "Não tenho interesse",
                     ].map((area) => (
                       <label key={area} className="flex items-start gap-3 cursor-pointer group/chk" onClick={() => handleAreaToggle(area)}>
@@ -404,21 +406,6 @@ export default function Home() {
           </div>
 
         </main>
-
-        {/* ─────────── RIGHT PANEL ─────────── */}
-        <aside
-          className="flex flex-col justify-end px-10 py-[60px] xl:flex lg:flex hidden"
-          style={{ gridColumn: 3 }}
-        >
-          <div className="flex flex-col gap-0">
-            <p className="font-mono text-[0.62rem] tracking-[0.15em] uppercase text-[#475569] mb-6">
-              Calendário do processo
-            </p>
-            <TimelineItem active>Inscrições abertas</TimelineItem>
-            <TimelineItem>Entrevistas com candidatos selecionados</TimelineItem>
-            <TimelineItem last>Divulgação do resultado final</TimelineItem>
-          </div>
-        </aside>
       </div>
     </>
   );
@@ -464,81 +451,8 @@ function ChevronIcon() {
   );
 }
 
-/* ── Step indicator for the left panel ── */
-interface StepIndicatorItemProps {
-  stepNumber: number;
-  label: string;
-  current: number;
-}
 
-function StepIndicatorItem({ stepNumber, label, current }: StepIndicatorItemProps) {
-  const isActive = stepNumber === current;
-  const isDone = stepNumber < current;
 
-  return (
-    <div className={`relative flex items-start gap-4 ${stepNumber < 4 ? "pb-7" : "pb-0"}`}>
-      {/* Connector */}
-      {stepNumber < 4 && (
-        <span
-          className="absolute left-[7px] top-4 bottom-0 w-px"
-          style={{
-            background: isDone
-              ? "linear-gradient(to bottom, #00d4ff, rgba(0,212,255,0.3))"
-              : "linear-gradient(to bottom, rgba(255,255,255,0.08), transparent)",
-          }}
-        />
-      )}
-      {/* Dot */}
-      <div
-        className={`w-[15px] h-[15px] rounded-full flex-shrink-0 mt-0.5 relative border transition-colors ${
-          isActive ? "border-[#00d4ff] bg-[rgba(0,212,255,0.1)]"
-          : isDone ? "border-[#00d4ff] bg-[#00d4ff]"
-          : "border-white/10 bg-[#0f172a]"
-        }`}
-      >
-        {isActive && <span className="absolute inset-[3px] rounded-full bg-[#00d4ff]" />}
-        {isDone && (
-          <svg className="absolute inset-0 m-auto" width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="#0f172a" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        )}
-      </div>
-      {/* Label */}
-      <p className={`text-[0.8rem] leading-[1.5] transition-colors ${isActive ? "text-[#f8fafc]" : isDone ? "text-[#00d4ff]" : "text-[#94a3b8]"}`}>
-        {label}
-      </p>
-    </div>
-  );
-}
-
-interface TimelineItemProps {
-  active?: boolean;
-  last?: boolean;
-  children: React.ReactNode;
-}
-
-function TimelineItem({ active = false, last = false, children }: TimelineItemProps) {
-  return (
-    <div className={`relative flex items-start gap-4 ${last ? "pb-0" : "pb-7"}`}>
-      {!last && (
-        <span
-          className="absolute left-[7px] top-4 bottom-0 w-px"
-          style={{ background: "linear-gradient(to bottom, rgba(255,255,255,0.08), transparent)" }}
-        />
-      )}
-      <div
-        className={`w-[15px] h-[15px] rounded-full flex-shrink-0 mt-0.5 relative border transition-colors ${
-          active ? "border-[#00d4ff] bg-[rgba(0,212,255,0.1)]" : "border-white/10 bg-[#0f172a]"
-        }`}
-      >
-        {active && <span className="absolute inset-[3px] rounded-full bg-[#00d4ff]" />}
-      </div>
-      <p className={`text-[0.8rem] leading-[1.5] transition-colors ${active ? "text-[#f8fafc]" : "text-[#94a3b8]"}`}>
-        {children}
-      </p>
-    </div>
-  );
-}
 
 function Spinner() {
   return (
