@@ -2,9 +2,52 @@
 
 import { useState } from "react";
 
+type Status = "idle" | "loading" | "success" | "error";
+
 export default function Home() {
+  const [nome, setNome] = useState("");
+  const [ra, setRa] = useState("");
   const [cursoValue, setCursoValue] = useState("");
   const [interesseValue, setInteresseValue] = useState("");
+  const [motivacao, setMotivacao] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    setErrorMsg("");
+
+    try {
+      const res = await fetch("/api/inscricao", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          nome,
+          ra,
+          curso: cursoValue,
+          interesse: interesseValue,
+          motivacao,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.error ?? "Erro ao enviar inscrição.");
+      }
+
+      setStatus("success");
+      // Reset fields
+      setNome("");
+      setRa("");
+      setCursoValue("");
+      setInteresseValue("");
+      setMotivacao("");
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : "Erro inesperado.");
+      setStatus("error");
+    }
+  }
 
   return (
     <>
@@ -99,7 +142,27 @@ export default function Home() {
             </p>
           </div>
 
-          <form id="ligaForm" noValidate className="flex flex-col">
+          {/* ── Success banner ── */}
+          {status === "success" && (
+            <div className="mb-6 flex items-center gap-3 rounded-[10px] border border-[rgba(0,212,255,0.25)] bg-[rgba(0,212,255,0.06)] px-4 py-3 text-[0.83rem] text-[#00d4ff] backdrop-blur-sm">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Inscrição enviada com sucesso!
+            </div>
+          )}
+
+          {/* ── Error banner ── */}
+          {status === "error" && (
+            <div className="mb-6 flex items-center gap-3 rounded-[10px] border border-red-500/25 bg-red-500/[0.06] px-4 py-3 text-[0.83rem] text-red-400 backdrop-blur-sm">
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+              </svg>
+              {errorMsg}
+            </div>
+          )}
+
+          <form id="ligaForm" noValidate className="flex flex-col" onSubmit={handleSubmit}>
 
             {/* Nome completo */}
             <FieldWrapper label="Nome completo" htmlFor="nome" delay="0.10s">
@@ -110,6 +173,8 @@ export default function Home() {
                 placeholder="Ex: Ana Paula Barros"
                 autoComplete="name"
                 required
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
                 className={inputClass}
               />
             </FieldWrapper>
@@ -123,6 +188,8 @@ export default function Home() {
                   name="ra"
                   placeholder="Ex: 00123456"
                   required
+                  value={ra}
+                  onChange={(e) => setRa(e.target.value)}
                   className={inputClass}
                 />
               </FieldWrapper>
@@ -185,6 +252,8 @@ export default function Home() {
                 name="motivacao"
                 placeholder="Descreva sua motivação em entrar na liga e o que espera contribuir..."
                 required
+                value={motivacao}
+                onChange={(e) => setMotivacao(e.target.value)}
                 className={`${inputClass} resize-none min-h-[110px] leading-[1.6]`}
               />
             </FieldWrapper>
@@ -192,19 +261,30 @@ export default function Home() {
             {/* Submit */}
             <button
               type="submit"
-              className="group relative w-full mt-2 px-6 py-[15px] flex items-center justify-center gap-[10px] overflow-hidden rounded-[10px] font-sans text-[0.88rem] font-semibold tracking-[0.08em] uppercase text-white transition-all duration-[250ms] hover:-translate-y-px hover:shadow-[0_8px_24px_rgba(0,85,255,0.35),0_0_0_1px_rgba(0,212,255,0.15)] active:translate-y-0"
+              disabled={status === "loading"}
+              className="group relative w-full mt-2 px-6 py-[15px] flex items-center justify-center gap-[10px] overflow-hidden rounded-[10px] font-sans text-[0.88rem] font-semibold tracking-[0.08em] uppercase text-white transition-all duration-[250ms] disabled:opacity-60 disabled:cursor-not-allowed hover:not-disabled:-translate-y-px hover:shadow-[0_8px_24px_rgba(0,85,255,0.35),0_0_0_1px_rgba(0,212,255,0.15)] active:translate-y-0"
               style={{
                 background: "linear-gradient(135deg,#0055ff 0%,#0099dd 100%)",
               }}
             >
               {/* shimmer */}
               <span className="pointer-events-none absolute inset-0 translate-x-[-100%] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent transition-transform duration-[600ms] group-hover:translate-x-full" />
-              Enviar inscrição
-              <span className="inline-flex transition-transform duration-200 group-hover:translate-x-[3px]">
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M13 6l6 6-6 6" />
-                </svg>
-              </span>
+
+              {status === "loading" ? (
+                <>
+                  <Spinner />
+                  Enviando...
+                </>
+              ) : (
+                <>
+                  Enviar inscrição
+                  <span className="inline-flex transition-transform duration-200 group-hover:translate-x-[3px]">
+                    <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
+                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M13 6l6 6-6 6" />
+                    </svg>
+                  </span>
+                </>
+              )}
             </button>
 
           </form>
@@ -312,5 +392,29 @@ function TimelineItem({ active = false, last = false, children }: TimelineItemPr
         {children}
       </p>
     </div>
+  );
+}
+
+function Spinner() {
+  return (
+    <svg
+      className="animate-spin"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+    >
+      <circle
+        className="opacity-25"
+        cx="12" cy="12" r="10"
+        stroke="currentColor"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-75"
+        fill="currentColor"
+        d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z"
+      />
+    </svg>
   );
 }
