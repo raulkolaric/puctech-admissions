@@ -6,8 +6,18 @@ interface FormPayload {
   nome: string;
   ra: string;
   curso: string;
-  interesse: string;
-  motivacao: string;
+  ano: string;
+  email: string;
+  telefone: string;
+  auxilio: string;
+  motivo_puc: string;
+  areas_interesse: string;
+  projetos: string;
+  experiencia: string;
+  habilidades: string;
+  soft_hard_skills: string;
+  tempo_livre: string;
+  areas_operacionais: string[];
 }
 
 function validate(body: unknown): body is FormPayload {
@@ -17,8 +27,18 @@ function validate(body: unknown): body is FormPayload {
     typeof b.nome === "string" && b.nome.trim() !== "" &&
     typeof b.ra === "string" && b.ra.trim() !== "" &&
     typeof b.curso === "string" && b.curso.trim() !== "" &&
-    typeof b.interesse === "string" && b.interesse.trim() !== "" &&
-    typeof b.motivacao === "string" && b.motivacao.trim() !== ""
+    typeof b.ano === "string" && b.ano.trim() !== "" &&
+    typeof b.email === "string" && b.email.trim() !== "" &&
+    typeof b.telefone === "string" && b.telefone.trim() !== "" &&
+    typeof b.auxilio === "string" &&
+    typeof b.motivo_puc === "string" && b.motivo_puc.trim() !== "" &&
+    typeof b.areas_interesse === "string" && b.areas_interesse.trim() !== "" &&
+    typeof b.projetos === "string" && b.projetos.trim() !== "" &&
+    typeof b.experiencia === "string" && b.experiencia.trim() !== "" &&
+    typeof b.habilidades === "string" && b.habilidades.trim() !== "" &&
+    typeof b.soft_hard_skills === "string" && b.soft_hard_skills.trim() !== "" &&
+    typeof b.tempo_livre === "string" && b.tempo_livre.trim() !== "" &&
+    Array.isArray(b.areas_operacionais) && b.areas_operacionais.length > 0
   );
 }
 
@@ -55,7 +75,7 @@ export async function POST(req: NextRequest) {
   });
 
   const tab = process.env.GOOGLE_SHEET_TAB;
-  const range = tab ? `'${tab}'!A:F` : "A:F";
+  const range = tab ? `'${tab}'!A:P` : "A:P";
 
   console.log("[sheets] tab:", tab ?? "(using first sheet)");
   console.log("[sheets] range:", range);
@@ -72,8 +92,18 @@ export async function POST(req: NextRequest) {
           body.nome.trim(),
           body.ra.trim(),
           body.curso.trim(),
-          body.interesse.trim(),
-          body.motivacao.trim(),
+          body.ano.trim(),
+          body.email.trim(),
+          body.telefone.trim(),
+          body.auxilio.trim(),        // optional but passed as string
+          body.motivo_puc.trim(),
+          body.areas_interesse.trim(),
+          body.projetos.trim(),
+          body.experiencia.trim(),
+          body.habilidades.trim(),
+          body.soft_hard_skills.trim(),
+          body.tempo_livre.trim(),
+          body.areas_operacionais.join(", "), // array back to comma string
         ]],
       },
     });

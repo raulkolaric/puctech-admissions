@@ -7,11 +7,41 @@ type Status = "idle" | "loading" | "success" | "error";
 export default function Home() {
   const [nome, setNome] = useState("");
   const [ra, setRa] = useState("");
-  const [cursoValue, setCursoValue] = useState("");
-  const [interesseValue, setInteresseValue] = useState("");
-  const [motivacao, setMotivacao] = useState("");
+  const [curso, setCurso] = useState("");
+  const [ano, setAno] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [auxilio, setAuxilio] = useState("");
+
+  const [motivoPuc, setMotivoPuc] = useState("");
+  const [areasInteresse, setAreasInteresse] = useState("");
+  const [projetos, setProjetos] = useState("");
+  const [experiencia, setExperiencia] = useState("");
+
+  const [habilidades, setHabilidades] = useState("");
+  const [softHardSkills, setSoftHardSkills] = useState("");
+  const [tempoLivre, setTempoLivre] = useState("");
+
+  const [areasOperacionais, setAreasOperacionais] = useState<string[]>([]);
+  
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
+
+  function handleAreaToggle(area: string) {
+    if (area === "Não tenho interesse") {
+      setAreasOperacionais(["Não tenho interesse"]);
+      return;
+    }
+    
+    setAreasOperacionais(prev => {
+      const filtered = prev.filter(p => p !== "Não tenho interesse");
+      if (filtered.includes(area)) {
+        return filtered.filter(p => p !== area);
+      } else {
+        return [...filtered, area];
+      }
+    });
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -25,9 +55,19 @@ export default function Home() {
         body: JSON.stringify({
           nome,
           ra,
-          curso: cursoValue,
-          interesse: interesseValue,
-          motivacao,
+          curso,
+          ano,
+          email,
+          telefone,
+          auxilio,
+          motivo_puc: motivoPuc,
+          areas_interesse: areasInteresse,
+          projetos,
+          experiencia,
+          habilidades,
+          soft_hard_skills: softHardSkills,
+          tempo_livre: tempoLivre,
+          areas_operacionais: areasOperacionais,
         }),
       });
 
@@ -37,12 +77,13 @@ export default function Home() {
       }
 
       setStatus("success");
+      
       // Reset fields
-      setNome("");
-      setRa("");
-      setCursoValue("");
-      setInteresseValue("");
-      setMotivacao("");
+      setNome(""); setRa(""); setCurso(""); setAno("");
+      setEmail(""); setTelefone(""); setAuxilio("");
+      setMotivoPuc(""); setAreasInteresse(""); setProjetos(""); setExperiencia("");
+      setHabilidades(""); setSoftHardSkills(""); setTempoLivre("");
+      setAreasOperacionais([]);
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Erro inesperado.");
       setStatus("error");
@@ -162,104 +203,154 @@ export default function Home() {
             </div>
           )}
 
-          <form id="ligaForm" noValidate className="flex flex-col" onSubmit={handleSubmit}>
+          <form id="ligaForm" noValidate className="flex flex-col gap-10" onSubmit={handleSubmit}>
 
-            {/* Nome completo */}
-            <FieldWrapper label="Nome completo" htmlFor="nome" delay="0.10s">
-              <input
-                type="text"
-                id="nome"
-                name="nome"
-                placeholder="Ex: Ana Paula Barros"
-                autoComplete="name"
-                required
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-                className={inputClass}
-              />
-            </FieldWrapper>
+            {/* ================= SECTION 1 ================= */}
+            <fieldset className="flex flex-col gap-5">
+              <legend className="text-[#f8fafc] font-medium text-lg mb-4 border-b border-white/10 pb-2 w-full">
+                1. Informações Básicas
+              </legend>
 
-            {/* RA + Curso — two columns */}
-            <div className="grid grid-cols-2 gap-[14px]">
-              <FieldWrapper label="RA" htmlFor="ra" delay="0.14s">
-                <input
-                  type="text"
-                  id="ra"
-                  name="ra"
-                  placeholder="Ex: 00123456"
-                  required
-                  value={ra}
-                  onChange={(e) => setRa(e.target.value)}
-                  className={inputClass}
-                />
+              <FieldWrapper label="1. Qual seu Nome?" htmlFor="nome">
+                <input type="text" id="nome" name="nome" required value={nome} onChange={(e) => setNome(e.target.value)} className={inputClass} />
               </FieldWrapper>
 
-              <FieldWrapper label="Curso" htmlFor="curso" delay="0.14s">
-                <div className="relative">
-                  <select
-                    id="curso"
-                    name="curso"
-                    required
-                    value={cursoValue}
-                    onChange={(e) => setCursoValue(e.target.value)}
-                    className={`${selectBaseClass} ${cursoValue ? "text-[#f8fafc]" : "text-[#475569]"}`}
-                  >
-                    <option value="" disabled>Selecione seu curso</option>
-                    <option value="cc">Ciência da Computação</option>
-                    <option value="design">Design</option>
-                    <option value="biomed">Engenharia Biomédica</option>
-                    <option value="civil">Engenharia Civil</option>
-                    <option value="producao">Engenharia de Produção</option>
-                    <option value="scf">Engenharia de Sistemas Ciber Físicos</option>
-                    <option value="jogos">Jogos Digitais</option>
-                  </select>
-                  <ChevronIcon />
-                </div>
-              </FieldWrapper>
-            </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
+                <FieldWrapper label="2. Qual seu RA?" htmlFor="ra">
+                  <input type="text" id="ra" name="ra" required value={ra} onChange={(e) => setRa(e.target.value)} className={inputClass} />
+                </FieldWrapper>
 
-            {/* Interesse */}
-            <FieldWrapper label="Especialização de interesse" htmlFor="interesse" delay="0.18s">
-              <div className="relative">
-                <select
-                  id="interesse"
-                  name="interesse"
-                  required
-                  value={interesseValue}
-                  onChange={(e) => setInteresseValue(e.target.value)}
-                  className={`${selectBaseClass} ${interesseValue ? "text-[#f8fafc]" : "text-[#475569]"}`}
-                >
-                  <option value="" disabled>Selecione uma área</option>
-                  <option value="cyber">Cibersecurity</option>
-                  <option value="ia">Inteligência Artificial</option>
-                  <option value="dev">Desenvolvimento de Sistemas</option>
-                  <option value="data">Data Science</option>
-                  <option value="cloud">Cloud Computing</option>
-                  <option value="iot">Internet das Coisas (IoT)</option>
-                  <option value="games">Desenvolvimento de Games</option>
-                  <option value="mobile">Desenvolvimento Mobile</option>
-                  <option value="devops">DevOps &amp; SRE</option>
-                  <option value="blockchain">Blockchain &amp; Web3</option>
-                </select>
-                <ChevronIcon />
+                <FieldWrapper label="3. Qual seu Curso?" htmlFor="curso">
+                  <div className="relative">
+                    <select id="curso" required value={curso} onChange={(e) => setCurso(e.target.value)} className={`${selectBaseClass} ${curso ? "text-[#f8fafc]" : "text-[#475569]"}`}>
+                      <option value="" disabled>Selecione seu curso</option>
+                      <option value="Ciência da Computação">Ciência da Computação</option>
+                      <option value="Jogos Digitais">Jogos Digitais</option>
+                      <option value="Design">Design</option>
+                      <option value="Engenharia Biomédica">Engenharia Biomédica</option>
+                      <option value="Engenharia de Sistemas Cyber-Físicos">Engenharia de Sistemas Cyber-Físicos</option>
+                      <option value="Engenharia de Produção">Engenharia de Produção</option>
+                      <option value="Engenharia Civil">Engenharia Civil</option>
+                      <option value="Outro">Outro</option>
+                    </select>
+                    <ChevronIcon />
+                  </div>
+                </FieldWrapper>
               </div>
-            </FieldWrapper>
 
-            {/* Motivação */}
-            <FieldWrapper label="Motivação" htmlFor="motivacao" delay="0.22s">
-              <textarea
-                id="motivacao"
-                name="motivacao"
-                placeholder="Descreva sua motivação em entrar na liga e o que espera contribuir..."
-                required
-                value={motivacao}
-                onChange={(e) => setMotivacao(e.target.value)}
-                className={`${inputClass} resize-none min-h-[110px] leading-[1.6]`}
-              />
-            </FieldWrapper>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
+                <FieldWrapper label="4. Qual seu Ano/Período?" htmlFor="ano">
+                  <div className="relative">
+                    <select id="ano" required value={ano} onChange={(e) => setAno(e.target.value)} className={`${selectBaseClass} ${ano ? "text-[#f8fafc]" : "text-[#475569]"}`}>
+                      <option value="" disabled>Selecione</option>
+                      <option value="1º Período / 1º Ano">1º Período 1º Ano</option>
+                      <option value="3º Período / 2º Ano">3º Período 2º Ano</option>
+                      <option value="5º Período / 3º Ano">5º Período 3º Ano</option>
+                      <option value="7º Período / 4º Ano">7º Período 4º Ano</option>
+                      <option value="9º Período / 5º Ano">9º Período 5º Ano</option>
+                      <option value="Outro">Outro</option>
+                    </select>
+                    <ChevronIcon />
+                  </div>
+                </FieldWrapper>
 
-            {/* Submit */}
-            <button
+                <FieldWrapper label="5. Qual seu Email?" htmlFor="email">
+                  <input type="email" id="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} />
+                </FieldWrapper>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
+                <FieldWrapper label="6. Telefone (com DDD)" htmlFor="telefone">
+                  <input type="tel" id="telefone" required value={telefone} onChange={(e) => setTelefone(e.target.value)} className={inputClass} />
+                </FieldWrapper>
+
+                <FieldWrapper label="7. Necessita de auxílio especial?" htmlFor="auxilio">
+                  <input type="text" id="auxilio" placeholder="Opcional. Ex: interprete de libras" value={auxilio} onChange={(e) => setAuxilio(e.target.value)} className={inputClass} />
+                </FieldWrapper>
+              </div>
+            </fieldset>
+
+            {/* ================= SECTION 2 ================= */}
+            <fieldset className="flex flex-col gap-5">
+              <legend className="text-[#f8fafc] font-medium text-lg mb-4 border-b border-white/10 pb-2 w-full">
+                2. Áreas de Interesse
+                <span className="block text-xs text-[#94a3b8] font-normal mt-1">OBS: Se não tiver o que responder, escreva "N/A".</span>
+              </legend>
+
+              <FieldWrapper label="8. Por que você gostaria de entrar na PUC Tech?" htmlFor="motivo_puc">
+                <textarea id="motivo_puc" required value={motivoPuc} onChange={(e) => setMotivoPuc(e.target.value)} className={`${inputClass} resize-y min-h-[80px]`} />
+              </FieldWrapper>
+
+              <FieldWrapper label="9. Quais são suas áreas de interesse?" htmlFor="areas_interesse">
+                <textarea id="areas_interesse" required value={areasInteresse} onChange={(e) => setAreasInteresse(e.target.value)} className={`${inputClass} resize-y min-h-[80px]`} />
+              </FieldWrapper>
+
+              <FieldWrapper label="10. Você já desenvolveu algum projeto? Se sim, quais?" htmlFor="projetos">
+                <textarea id="projetos" required placeholder="Sinta-se à vontade para deixar o link." value={projetos} onChange={(e) => setProjetos(e.target.value)} className={`${inputClass} resize-y min-h-[80px]`} />
+              </FieldWrapper>
+
+              <FieldWrapper label="11. Você possui alguma experiência prévia? Descreva." htmlFor="experiencia">
+                <textarea id="experiencia" required value={experiencia} onChange={(e) => setExperiencia(e.target.value)} className={`${inputClass} resize-y min-h-[80px]`} />
+              </FieldWrapper>
+            </fieldset>
+
+            {/* ================= SECTION 3 ================= */}
+            <fieldset className="flex flex-col gap-5">
+              <legend className="text-[#f8fafc] font-medium text-lg mb-4 border-b border-white/10 pb-2 w-full">
+                3. Habilidades
+              </legend>
+
+              <FieldWrapper label="12. Quais habilidades você possui e acredita serem relevantes?" htmlFor="habilidades">
+                <textarea id="habilidades" required value={habilidades} onChange={(e) => setHabilidades(e.target.value)} className={`${inputClass} resize-y min-h-[80px]`} />
+              </FieldWrapper>
+
+              <FieldWrapper label="13. Quais são suas principais Soft-Skills e Hard-Skills?" htmlFor="soft_hard_skills">
+                <textarea id="soft_hard_skills" required value={softHardSkills} onChange={(e) => setSoftHardSkills(e.target.value)} className={`${inputClass} resize-y min-h-[80px]`} />
+              </FieldWrapper>
+
+              <FieldWrapper label="14. O que você gosta de fazer no tempo livre?" htmlFor="tempo_livre">
+                <textarea id="tempo_livre" required value={tempoLivre} onChange={(e) => setTempoLivre(e.target.value)} className={`${inputClass} resize-y min-h-[80px]`} />
+              </FieldWrapper>
+
+              {/* Checkboxes for area operacionais */}
+              <div className="relative mb-2 group/field animate-fade-up" style={{ animationDelay: "0s" }}>
+                <label className="flex items-center gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[#94a3b8] mb-3">
+                  <span className="w-[5px] h-[5px] rounded-full bg-[#475569]" />
+                  15. Gostaria de contribuir com áreas operacionais?
+                </label>
+                <div className="flex flex-col gap-3">
+                  {[
+                    "Marketing (redes sociais, comunicação e design)",
+                    "Eventos (organização de oficinas, workshops, etc.)",
+                    "RH e Administrativo (gestão de pessoas e processos)",
+                    "Não tenho interesse"
+                  ].map(area => (
+                    <label key={area} className="flex items-start gap-3 cursor-pointer group/chk" onClick={() => handleAreaToggle(area)}>
+                      <div className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border transition-all ${
+                        areasOperacionais.includes(area)
+                          ? "bg-[rgba(0,212,255,0.15)] border-[#00d4ff]"
+                          : "bg-white/[0.03] border-white/10 group-hover/chk:border-white/30"
+                      }`}>
+                        {areasOperacionais.includes(area) && (
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#00d4ff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12" />
+                          </svg>
+                        )}
+                      </div>
+                      <span className={`text-[0.9rem] leading-snug transition-colors ${
+                        areasOperacionais.includes(area) ? "text-[#f8fafc]" : "text-[#94a3b8] group-hover/chk:text-white/80"
+                      }`}>
+                        {area}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </fieldset>
+
+            {/* Submit Toolbar */}
+            <div className="pt-4 border-t border-white/[0.06]">
+              <button
               type="submit"
               disabled={status === "loading"}
               className="group relative w-full mt-2 px-6 py-[15px] flex items-center justify-center gap-[10px] overflow-hidden rounded-[10px] font-sans text-[0.88rem] font-semibold tracking-[0.08em] uppercase text-white transition-all duration-[250ms] disabled:opacity-60 disabled:cursor-not-allowed hover:not-disabled:-translate-y-px hover:shadow-[0_8px_24px_rgba(0,85,255,0.35),0_0_0_1px_rgba(0,212,255,0.15)] active:translate-y-0"
@@ -285,7 +376,8 @@ export default function Home() {
                   </span>
                 </>
               )}
-            </button>
+              </button>
+            </div>
 
           </form>
         </main>
