@@ -181,7 +181,7 @@ export default function Home() {
 
       {/* ── Wrapper ── */}
       <div
-        className="relative z-10 grid w-full min-h-screen grid-cols-1 lg:grid-cols-[1fr_520px_1fr]"
+        className="relative z-10 grid w-full max-w-full overflow-x-hidden min-h-screen grid-cols-1 lg:grid-cols-[1fr_520px_1fr]"
       >
         {/* ───── MOBILE HEADER (visible < lg) ───── */}
         <header className="flex flex-col items-center text-center px-6 pt-10 pb-6 lg:hidden">
@@ -278,19 +278,27 @@ export default function Home() {
             {step === 1 && (
               <>
                 <FieldWrapper label="Qual seu Nome?" htmlFor="nome" error={errors.nome}>
-                  <input type="text" id="nome" required value={nome} onChange={(e) => setNome(e.target.value)} className={inputClass} placeholder="Ex: Ana Paula Barros" />
+                  <input type="text" id="nome" required value={nome} onChange={(e) => setNome(e.target.value)} className={`${inputClass} h-[50px]`} placeholder="Ex: Ana Paula Barros" />
                 </FieldWrapper>
 
                 <FieldWrapper label="Qual seu Email para contato?" htmlFor="email" error={errors.email}>
-                  <input type="email" id="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} placeholder="seuemail@exemplo.com" />
+                  <input type="email" id="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={`${inputClass} h-[50px]`} placeholder="seuemail@exemplo.com" />
                 </FieldWrapper>
 
                 <FieldWrapper label="Qual seu Instagram?" htmlFor="instagram" error={errors.instagram}>
-                  <input type="text" id="instagram" value={instagram} onChange={(e) => setInstagram(e.target.value)} className={inputClass} placeholder="@seuperfil" />
+                  <input type="text" id="instagram" value={instagram} onChange={(e) => setInstagram(e.target.value)} className={`${inputClass} h-[50px]`} placeholder="@seuperfil" />
                 </FieldWrapper>
 
                 <FieldWrapper label="Data de Nascimento" htmlFor="dataNascimento" error={errors.dataNascimento}>
-                  <input type="date" id="dataNascimento" required value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} className={inputClass} style={{ colorScheme: "dark" }} />
+                  <input 
+                    type="date" 
+                    id="dataNascimento" 
+                    required 
+                    value={dataNascimento} 
+                    onChange={(e) => setDataNascimento(e.target.value)} 
+                    className={`${inputClass} h-[50px] !py-0 flex items-center`} 
+                    style={{ colorScheme: "dark" }} 
+                  />
                 </FieldWrapper>
               </>
             )}
@@ -299,26 +307,30 @@ export default function Home() {
             {step === 2 && (
               <>
                 <div className="grid grid-cols-2 gap-[14px]">
-                  <FieldWrapper label="Qual seu RA?" htmlFor="ra" error={errors.ra}>
-                    <input type="text" id="ra" required value={ra} onChange={(e) => setRa(e.target.value)} className={inputClass} placeholder="Ex: 00123456" />
-                  </FieldWrapper>
+                  <div className="min-w-0">
+                    <FieldWrapper label="Qual seu RA?" htmlFor="ra" error={errors.ra}>
+                      <input type="text" id="ra" required value={ra} onChange={(e) => setRa(e.target.value)} className={`${inputClass} h-[50px]`} placeholder="Ex: 00123456" />
+                    </FieldWrapper>
+                  </div>
 
-                  <FieldWrapper label="Qual seu Curso?" htmlFor="curso" error={errors.curso}>
-                    <div className="relative">
-                      <select id="curso" required value={curso} onChange={(e) => { setCurso(e.target.value); setOutroCurso(""); setErrors({}); }} className={`${selectBaseClass} ${curso ? "text-[#f8fafc]" : "text-[#475569]"}`}>
-                        <option value="" disabled>Selecione seu curso</option>
-                        <option value="Ciência da Computação">Ciência da Computação</option>
-                        <option value="Jogos Digitais">Jogos Digitais</option>
-                        <option value="Design">Design</option>
-                        <option value="Engenharia Biomédica">Engenharia Biomédica</option>
-                        <option value="Engenharia de Sistemas Cyber-Físicos">Engenharia de Sistemas Cyber-Físicos</option>
-                        <option value="Engenharia de Produção">Engenharia de Produção</option>
-                        <option value="Engenharia Civil">Engenharia Civil</option>
-                        <option value="Outro">Outro</option>
-                      </select>
-                      <ChevronIcon />
-                    </div>
-                  </FieldWrapper>
+                  <div className="min-w-0">
+                    <FieldWrapper label="Qual seu Curso?" htmlFor="curso" error={errors.curso}>
+                      <div className="relative">
+                        <select id="curso" required value={curso} onChange={(e) => { setCurso(e.target.value); setOutroCurso(""); setErrors({}); }} className={`${selectBaseClass} ${curso ? "text-[#f8fafc]" : "text-[#475569]"}`}>
+                          <option value="" disabled>Selecione seu curso</option>
+                          <option value="Ciência da Computação">Ciência da Computação</option>
+                          <option value="Jogos Digitais">Jogos Digitais</option>
+                          <option value="Design">Design</option>
+                          <option value="Engenharia Biomédica">Engenharia Biomédica</option>
+                          <option value="Engenharia de Sistemas Cyber-Físicos">Engenharia de Sistemas Cyber-Físicos</option>
+                          <option value="Engenharia de Produção">Engenharia de Produção</option>
+                          <option value="Engenharia Civil">Engenharia Civil</option>
+                          <option value="Outro">Outro</option>
+                        </select>
+                        <ChevronIcon />
+                      </div>
+                    </FieldWrapper>
+                  </div>
                 </div>
 
                 {curso === "Outro" && (
@@ -330,7 +342,7 @@ export default function Home() {
                         required 
                         value={outroCurso} 
                         onChange={(e) => setOutroCurso(e.target.value)} 
-                        className={inputClass} 
+                        className={`${inputClass} h-[50px]`} 
                         placeholder="Nome do seu curso" 
                       />
                     </FieldWrapper>
@@ -338,24 +350,28 @@ export default function Home() {
                 )}
 
                 <div className="grid grid-cols-2 gap-[14px]">
-                  <FieldWrapper label="Qual seu Ano/Período?" htmlFor="ano" error={errors.ano}>
-                    <div className="relative">
-                      <select id="ano" required value={ano} onChange={(e) => setAno(e.target.value)} className={`${selectBaseClass} ${ano ? "text-[#f8fafc]" : "text-[#475569]"}`}>
-                        <option value="" disabled>Selecione</option>
-                        <option value="1º Período / 1º Ano">1º Período 1º Ano</option>
-                        <option value="3º Período / 2º Ano">3º Período 2º Ano</option>
-                        <option value="5º Período / 3º Ano">5º Período 3º Ano</option>
-                        <option value="7º Período / 4º Ano">7º Período 4º Ano</option>
-                        <option value="9º Período / 5º Ano">9º Período 5º Ano</option>
-                        <option value="Outro">Outro</option>
-                      </select>
-                      <ChevronIcon />
-                    </div>
-                  </FieldWrapper>
+                  <div className="min-w-0">
+                    <FieldWrapper label="Qual seu Ano/Período?" htmlFor="ano" error={errors.ano}>
+                      <div className="relative">
+                        <select id="ano" required value={ano} onChange={(e) => setAno(e.target.value)} className={`${selectBaseClass} ${ano ? "text-[#f8fafc]" : "text-[#475569]"}`}>
+                          <option value="" disabled>Selecione</option>
+                          <option value="1º Período / 1º Ano">1º Período 1º Ano</option>
+                          <option value="3º Período / 2º Ano">3º Período 2º Ano</option>
+                          <option value="5º Período / 3º Ano">5º Período 3º Ano</option>
+                          <option value="7º Período / 4º Ano">7º Período 4º Ano</option>
+                          <option value="9º Período / 5º Ano">9º Período 5º Ano</option>
+                          <option value="Outro">Outro</option>
+                        </select>
+                        <ChevronIcon />
+                      </div>
+                    </FieldWrapper>
+                  </div>
 
-                  <FieldWrapper label="Telefone (com DDD)" htmlFor="telefone" error={errors.telefone}>
-                    <input type="tel" id="telefone" required value={telefone} onChange={(e) => setTelefone(e.target.value)} className={inputClass} placeholder="(11) 99999-9999" />
-                  </FieldWrapper>
+                  <div className="min-w-0">
+                    <FieldWrapper label="Telefone (com DDD)" htmlFor="telefone" error={errors.telefone}>
+                      <input type="tel" id="telefone" required value={telefone} onChange={(e) => setTelefone(e.target.value)} className={`${inputClass} h-[50px]`} placeholder="(11) 99999-9999" />
+                    </FieldWrapper>
+                  </div>
                 </div>
               </>
             )}
@@ -364,19 +380,19 @@ export default function Home() {
             {step === 3 && (
               <>
                 <FieldWrapper label="Por que você gostaria de entrar na PUC Tech?" htmlFor="motivo_puc" error={errors.motivoPuc}>
-                  <textarea id="motivo_puc" required value={motivoPuc} onChange={(e) => setMotivoPuc(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
+                  <textarea id="motivo_puc" required value={motivoPuc} onChange={(e) => setMotivoPuc(e.target.value)} className={`${inputClass} py-[13px] resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
                 <FieldWrapper label="Quais são suas áreas de interesse?" htmlFor="areas_interesse" error={errors.areasInteresse}>
-                  <textarea id="areas_interesse" required value={areasInteresse} onChange={(e) => setAreasInteresse(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
+                  <textarea id="areas_interesse" required value={areasInteresse} onChange={(e) => setAreasInteresse(e.target.value)} className={`${inputClass} py-[13px] resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
                 <FieldWrapper label="Você já desenvolveu algum projeto? Se sim, quais?" htmlFor="projetos" error={errors.projetos}>
-                  <textarea id="projetos" required placeholder="Sinta-se à vontade para deixar o link." value={projetos} onChange={(e) => setProjetos(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
+                  <textarea id="projetos" required placeholder="Sinta-se à vontade para deixar o link." value={projetos} onChange={(e) => setProjetos(e.target.value)} className={`${inputClass} py-[13px] resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
                 <FieldWrapper label="Você possui alguma experiência prévia? Descreva." htmlFor="experiencia" error={errors.experiencia}>
-                  <textarea id="experiencia" required value={experiencia} onChange={(e) => setExperiencia(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
+                  <textarea id="experiencia" required value={experiencia} onChange={(e) => setExperiencia(e.target.value)} className={`${inputClass} py-[13px] resize-y min-h-[90px]`} />
                 </FieldWrapper>
               </>
             )}
@@ -385,15 +401,15 @@ export default function Home() {
             {step === 4 && (
               <>
                 <FieldWrapper label="Quais habilidade voce possui e acredita serem relevantes? (hard skills e soft skills)" htmlFor="habilidades" error={errors.habilidades}>
-                  <textarea id="habilidades" required value={habilidades} onChange={(e) => setHabilidades(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
+                  <textarea id="habilidades" required value={habilidades} onChange={(e) => setHabilidades(e.target.value)} className={`${inputClass} py-[13px] resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
                 <FieldWrapper label="Você tem disponibilidade para participar das reuniões semanais e eventos? (Atividades no período da tarde, e reuniões aos sábados)" htmlFor="soft_hard_skills" error={errors.softHardSkills}>
-                  <textarea id="soft_hard_skills" required value={softHardSkills} onChange={(e) => setSoftHardSkills(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
+                  <textarea id="soft_hard_skills" required value={softHardSkills} onChange={(e) => setSoftHardSkills(e.target.value)} className={`${inputClass} py-[13px] resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
                 <FieldWrapper label="O que você gosta de fazer no tempo livre?" htmlFor="tempo_livre" error={errors.tempoLivre}>
-                  <textarea id="tempo_livre" required value={tempoLivre} onChange={(e) => setTempoLivre(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
+                  <textarea id="tempo_livre" required value={tempoLivre} onChange={(e) => setTempoLivre(e.target.value)} className={`${inputClass} py-[13px] resize-y min-h-[90px]`} />
                 </FieldWrapper>
               </>
             )}
@@ -402,7 +418,7 @@ export default function Home() {
             {step === 5 && (
               <>
                 <FieldWrapper label="Quais são suas expectativas ao entrar na PUC Tech?" htmlFor="expectativas" error={errors.expectativas}>
-                  <textarea id="expectativas" required placeholder="O que você espera aprender, conquistar ou vivenciar como membro da liga?" value={expectativas} onChange={(e) => setExpectativas(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
+                  <textarea id="expectativas" required placeholder="O que você espera aprender, conquistar ou vivenciar como membro da liga?" value={expectativas} onChange={(e) => setExpectativas(e.target.value)} className={`${inputClass} py-[13px] resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
                 {/* Checkboxes */}
@@ -531,10 +547,10 @@ export default function Home() {
 
 /* ─── Shared style strings ─── */
 const inputClass =
-  "w-full px-4 py-[13px] bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-[10px] text-[#f8fafc] font-sans text-[0.93rem] outline-none transition-all duration-[250ms] placeholder:text-[#475569] hover:border-white/[0.14] focus:border-[rgba(0,212,255,0.4)] focus:bg-[rgba(0,212,255,0.04)] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.06)]";
+  "w-full px-4 bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-[10px] text-[#f8fafc] font-sans text-[0.93rem] outline-none transition-all duration-[250ms] placeholder:text-[#475569] hover:border-white/[0.14] focus:border-[rgba(0,212,255,0.4)] focus:bg-[rgba(0,212,255,0.04)] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.06)]";
 
 const selectBaseClass =
-  "w-full appearance-none px-4 py-[13px] pr-10 bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-[10px] font-sans text-[0.93rem] outline-none transition-all duration-[250ms] hover:border-white/[0.14] focus:border-[rgba(0,212,255,0.4)] focus:bg-[rgba(0,212,255,0.04)] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.06)] cursor-pointer [&>option]:bg-[#0f172a] [&>option]:text-[#f8fafc]";
+  "w-full appearance-none px-4 h-[50px] pr-10 bg-white/[0.03] backdrop-blur-sm border border-white/[0.08] rounded-[10px] font-sans text-[0.93rem] outline-none transition-all duration-[250ms] hover:border-white/[0.14] focus:border-[rgba(0,212,255,0.4)] focus:bg-[rgba(0,212,255,0.04)] focus:shadow-[0_0_0_3px_rgba(0,212,255,0.06)] cursor-pointer [&>option]:bg-[#0f172a] [&>option]:text-[#f8fafc]";
 
 /* ─── Sub-components ─── */
 interface FieldWrapperProps {
@@ -547,17 +563,17 @@ interface FieldWrapperProps {
 
 function FieldWrapper({ label, htmlFor, delay = "0s", error, children }: FieldWrapperProps) {
   return (
-    <div className="relative mb-5 group/field animate-fade-up" style={{ animationDelay: delay }}>
+    <div className="relative mb-5 group/field animate-fade-up overflow-x-hidden" style={{ animationDelay: delay }}>
       <label
         htmlFor={htmlFor}
-        className={`flex items-center gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] mb-2 transition-colors duration-200 ${
+        className={`flex items-start gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] mb-2 transition-colors duration-200 ${
           error ? "text-red-400 group-focus-within/field:text-red-400" : "text-[#94a3b8] group-focus-within/field:text-[#00d4ff]"
         }`}
       >
-        <span className={`w-[5px] h-[5px] rounded-full transition-colors duration-200 ${
+        <span className={`flex-shrink-0 w-[5px] h-[5px] rounded-full mt-[5px] transition-colors duration-200 ${
           error ? "bg-red-400 group-focus-within/field:bg-red-400" : "bg-[#475569] group-focus-within/field:bg-[#00d4ff]"
         }`} />
-        {label}
+        <span className="block leading-tight">{label}</span>
       </label>
       <div className={error ? "[&>input]:border-red-500/50 [&>input]:bg-red-500/[0.04] [&>textarea]:border-red-500/50 [&>textarea]:bg-red-500/[0.04] [&>div>select]:border-red-500/50 [&>div>select]:bg-red-500/[0.04]" : ""}>
         {children}
