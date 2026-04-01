@@ -35,6 +35,7 @@ export default function Home() {
 
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   /* ── Checkbox toggle logic ── */
   function handleAreaToggle(area: string) {
@@ -48,16 +49,48 @@ export default function Home() {
     });
   }
 
-  /* ── Per-step validation ── */
-  function canAdvance(): boolean {
-    switch (step) {
-      case 1: return nome.trim() !== "" && email.trim() !== "" && dataNascimento !== "";
-      case 2: return ra.trim() !== "" && curso !== "" && ano !== "" && telefone.trim() !== "";
-      case 3: return motivoPuc.trim() !== "" && areasInteresse.trim() !== "" && projetos.trim() !== "" && experiencia.trim() !== "";
-      case 4: return habilidades.trim() !== "" && softHardSkills.trim() !== "" && tempoLivre.trim() !== "";
-      case 5: return expectativas.trim() !== "" && areasOperacionais.length > 0;
-      default: return false;
+  function validateStep(): boolean {
+    const newErrors: Record<string, string> = {};
+
+    if (step === 1) {
+      if (!nome.trim()) newErrors.nome = "O nome é obrigatório.";
+      else if (nome.trim().split(/\s+/).length < 2) newErrors.nome = "Por favor, insira nome e sobrenome.";
+
+      if (!email.trim()) newErrors.email = "O email é obrigatório.";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) newErrors.email = "Insira um email válido.";
+
+      if (!dataNascimento) {
+        newErrors.dataNascimento = "A data de nascimento é obrigatória.";
+      } else {
+        const year = new Date(dataNascimento).getFullYear();
+        if (year < 1950 || year > new Date().getFullYear() - 15) {
+          newErrors.dataNascimento = "Insira um ano de nascimento válido.";
+        }
+      }
+    } else if (step === 2) {
+      if (!ra.trim()) newErrors.ra = "O RA é obrigatório.";
+      if (!curso) newErrors.curso = "Selecione um curso.";
+      if (!ano) newErrors.ano = "Selecione um ano/período.";
+      
+      const phoneDigits = telefone.replace(/\D/g, "");
+      if (!telefone.trim()) newErrors.telefone = "O telefone é obrigatório.";
+      else if (phoneDigits.length < 10) newErrors.telefone = "Insira um telefone válido com DDD.";
+    } else if (step === 3) {
+      if (motivoPuc.trim().length < 10) newErrors.motivoPuc = "Detalhe um pouco mais (mínimo 10 caracteres).";
+      if (areasInteresse.trim().length < 10) newErrors.areasInteresse = "Detalhe um pouco mais (mínimo 10 caracteres).";
+      if (!projetos.trim()) newErrors.projetos = "Este campo é obrigatório.";
+      if (!experiencia.trim()) newErrors.experiencia = "Este campo é obrigatório.";
+    } else if (step === 4) {
+      if (habilidades.trim().length < 10) newErrors.habilidades = "Detalhe um pouco mais (mínimo 10 caracteres).";
+      if (!softHardSkills.trim()) newErrors.softHardSkills = "Este campo é obrigatório.";
+      if (tempoLivre.trim().length < 10) newErrors.tempoLivre = "Detalhe um pouco mais (mínimo 10 caracteres).";
+    } else if (step === 5) {
+      if (expectativas.trim().length < 10) newErrors.expectativas = "Detalhe um pouco mais (mínimo 10 caracteres).";
+      if (areasOperacionais.length === 0) newErrors.areasOperacionais = "Selecione pelo menos uma opção.";
     }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   }
 
   /* ── Submit ── */
@@ -92,7 +125,7 @@ export default function Home() {
       setRa(""); setCurso(""); setAno(""); setTelefone("");
       setMotivoPuc(""); setAreasInteresse(""); setProjetos(""); setExperiencia("");
       setHabilidades(""); setSoftHardSkills(""); setTempoLivre("");
-      setExpectativas(""); setAreasOperacionais([]);
+      setExpectativas(""); setAreasOperacionais([]); setErrors({});
     } catch (err) {
       setErrorMsg(err instanceof Error ? err.message : "Erro inesperado.");
       setStatus("error");
@@ -233,19 +266,19 @@ export default function Home() {
             {/* STEP 1 — Sobre você */}
             {step === 1 && (
               <>
-                <FieldWrapper label="Qual seu Nome?" htmlFor="nome">
+                <FieldWrapper label="Qual seu Nome?" htmlFor="nome" error={errors.nome}>
                   <input type="text" id="nome" required value={nome} onChange={(e) => setNome(e.target.value)} className={inputClass} placeholder="Ex: Ana Paula Barros" />
                 </FieldWrapper>
 
-                <FieldWrapper label="Qual seu Email para contato?" htmlFor="email">
+                <FieldWrapper label="Qual seu Email para contato?" htmlFor="email" error={errors.email}>
                   <input type="email" id="email" required value={email} onChange={(e) => setEmail(e.target.value)} className={inputClass} placeholder="seuemail@exemplo.com" />
                 </FieldWrapper>
 
-                <FieldWrapper label="Qual seu Instagram?" htmlFor="instagram">
+                <FieldWrapper label="Qual seu Instagram?" htmlFor="instagram" error={errors.instagram}>
                   <input type="text" id="instagram" value={instagram} onChange={(e) => setInstagram(e.target.value)} className={inputClass} placeholder="@seuperfil" />
                 </FieldWrapper>
 
-                <FieldWrapper label="Data de Nascimento" htmlFor="dataNascimento">
+                <FieldWrapper label="Data de Nascimento" htmlFor="dataNascimento" error={errors.dataNascimento}>
                   <input type="date" id="dataNascimento" required value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} className={inputClass} style={{ colorScheme: "dark" }} />
                 </FieldWrapper>
               </>
@@ -255,11 +288,11 @@ export default function Home() {
             {step === 2 && (
               <>
                 <div className="grid grid-cols-2 gap-[14px]">
-                  <FieldWrapper label="Qual seu RA?" htmlFor="ra">
+                  <FieldWrapper label="Qual seu RA?" htmlFor="ra" error={errors.ra}>
                     <input type="text" id="ra" required value={ra} onChange={(e) => setRa(e.target.value)} className={inputClass} placeholder="Ex: 00123456" />
                   </FieldWrapper>
 
-                  <FieldWrapper label="Qual seu Curso?" htmlFor="curso">
+                  <FieldWrapper label="Qual seu Curso?" htmlFor="curso" error={errors.curso}>
                     <div className="relative">
                       <select id="curso" required value={curso} onChange={(e) => setCurso(e.target.value)} className={`${selectBaseClass} ${curso ? "text-[#f8fafc]" : "text-[#475569]"}`}>
                         <option value="" disabled>Selecione seu curso</option>
@@ -278,7 +311,7 @@ export default function Home() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-[14px]">
-                  <FieldWrapper label="Qual seu Ano/Período?" htmlFor="ano">
+                  <FieldWrapper label="Qual seu Ano/Período?" htmlFor="ano" error={errors.ano}>
                     <div className="relative">
                       <select id="ano" required value={ano} onChange={(e) => setAno(e.target.value)} className={`${selectBaseClass} ${ano ? "text-[#f8fafc]" : "text-[#475569]"}`}>
                         <option value="" disabled>Selecione</option>
@@ -293,7 +326,7 @@ export default function Home() {
                     </div>
                   </FieldWrapper>
 
-                  <FieldWrapper label="Telefone (com DDD)" htmlFor="telefone">
+                  <FieldWrapper label="Telefone (com DDD)" htmlFor="telefone" error={errors.telefone}>
                     <input type="tel" id="telefone" required value={telefone} onChange={(e) => setTelefone(e.target.value)} className={inputClass} placeholder="(11) 99999-9999" />
                   </FieldWrapper>
                 </div>
@@ -303,19 +336,19 @@ export default function Home() {
             {/* STEP 3 — Áreas de Interesse */}
             {step === 3 && (
               <>
-                <FieldWrapper label="Por que você gostaria de entrar na PUC Tech?" htmlFor="motivo_puc">
+                <FieldWrapper label="Por que você gostaria de entrar na PUC Tech?" htmlFor="motivo_puc" error={errors.motivoPuc}>
                   <textarea id="motivo_puc" required value={motivoPuc} onChange={(e) => setMotivoPuc(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Quais são suas áreas de interesse?" htmlFor="areas_interesse">
+                <FieldWrapper label="Quais são suas áreas de interesse?" htmlFor="areas_interesse" error={errors.areasInteresse}>
                   <textarea id="areas_interesse" required value={areasInteresse} onChange={(e) => setAreasInteresse(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Você já desenvolveu algum projeto? Se sim, quais?" htmlFor="projetos">
+                <FieldWrapper label="Você já desenvolveu algum projeto? Se sim, quais?" htmlFor="projetos" error={errors.projetos}>
                   <textarea id="projetos" required placeholder="Sinta-se à vontade para deixar o link." value={projetos} onChange={(e) => setProjetos(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Você possui alguma experiência prévia? Descreva." htmlFor="experiencia">
+                <FieldWrapper label="Você possui alguma experiência prévia? Descreva." htmlFor="experiencia" error={errors.experiencia}>
                   <textarea id="experiencia" required value={experiencia} onChange={(e) => setExperiencia(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
               </>
@@ -324,15 +357,15 @@ export default function Home() {
             {/* STEP 4 — Habilidades */}
             {step === 4 && (
               <>
-                <FieldWrapper label="Quais habilidade voce possui e acredita serem relevantes? (hard skills e soft skills)" htmlFor="habilidades">
+                <FieldWrapper label="Quais habilidade voce possui e acredita serem relevantes? (hard skills e soft skills)" htmlFor="habilidades" error={errors.habilidades}>
                   <textarea id="habilidades" required value={habilidades} onChange={(e) => setHabilidades(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Você tem disponibilidade para participar das reuniões semanais e eventos?" htmlFor="soft_hard_skills">
+                <FieldWrapper label="Você tem disponibilidade para participar das reuniões semanais e eventos?" htmlFor="soft_hard_skills" error={errors.softHardSkills}>
                   <textarea id="soft_hard_skills" required value={softHardSkills} onChange={(e) => setSoftHardSkills(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
-                <FieldWrapper label="O que você gosta de fazer no tempo livre?" htmlFor="tempo_livre">
+                <FieldWrapper label="O que você gosta de fazer no tempo livre?" htmlFor="tempo_livre" error={errors.tempoLivre}>
                   <textarea id="tempo_livre" required value={tempoLivre} onChange={(e) => setTempoLivre(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
               </>
@@ -341,14 +374,14 @@ export default function Home() {
             {/* STEP 5 — Expectativas */}
             {step === 5 && (
               <>
-                <FieldWrapper label="Quais são suas expectativas ao entrar na PUC Tech?" htmlFor="expectativas">
+                <FieldWrapper label="Quais são suas expectativas ao entrar na PUC Tech?" htmlFor="expectativas" error={errors.expectativas}>
                   <textarea id="expectativas" required placeholder="O que você espera aprender, conquistar ou vivenciar como membro da liga?" value={expectativas} onChange={(e) => setExpectativas(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
                 {/* Checkboxes */}
-                <div className="relative mb-2 group/field animate-fade-up">
-                  <label className="flex items-center gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[#94a3b8] mb-3">
-                    <span className="w-[5px] h-[5px] rounded-full bg-[#475569]" />
+                <div className="relative mb-4 group/field animate-fade-up">
+                  <label className={`flex items-center gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] mb-3 transition-colors duration-200 ${errors.areasOperacionais ? "text-red-400" : "text-[#94a3b8]"}`}>
+                    <span className={`w-[5px] h-[5px] rounded-full transition-colors duration-200 ${errors.areasOperacionais ? "bg-red-400" : "bg-[#475569]"}`} />
                     Você tem interesse com as áreas operacionais?
                   </label>
                   <div className="flex flex-col gap-3">
@@ -363,7 +396,7 @@ export default function Home() {
                           className={`mt-0.5 w-5 h-5 rounded flex items-center justify-center border transition-all ${
                             areasOperacionais.includes(area)
                               ? "bg-[rgba(0,212,255,0.15)] border-[#00d4ff]"
-                              : "bg-white/[0.03] border-white/10 group-hover/chk:border-white/30"
+                              : (errors.areasOperacionais ? "bg-red-500/[0.04] border-red-500/50" : "bg-white/[0.03] border-white/10 group-hover/chk:border-white/30")
                           }`}
                         >
                           {areasOperacionais.includes(area) && (
@@ -382,6 +415,11 @@ export default function Home() {
                       </label>
                     ))}
                   </div>
+                  {errors.areasOperacionais && (
+                    <p className="mt-2 text-[0.75rem] font-medium text-red-400 animate-fade-in">
+                      {errors.areasOperacionais}
+                    </p>
+                  )}
                 </div>
               </>
             )}
@@ -392,7 +430,7 @@ export default function Home() {
             {step > 1 && (
               <button
                 type="button"
-                onClick={() => { setStep((s) => s - 1); setStatus("idle"); }}
+                onClick={() => { setStep((s) => s - 1); setStatus("idle"); setErrors({}); }}
                 className="px-6 py-[13px] rounded-[10px] text-[0.88rem] font-semibold tracking-[0.08em] uppercase border border-white/10 text-[#94a3b8] transition-all duration-200 hover:border-white/20 hover:text-white"
               >
                 Voltar
@@ -402,8 +440,12 @@ export default function Home() {
             {step < TOTAL_STEPS ? (
               <button
                 type="button"
-                disabled={!canAdvance()}
-                onClick={() => setStep((s) => s + 1)}
+                onClick={() => {
+                  if (validateStep()) {
+                    setStep((s) => s + 1);
+                    setErrors({});
+                  }
+                }}
                 className="group relative flex-1 px-6 py-[15px] flex items-center justify-center gap-[10px] overflow-hidden rounded-[10px] font-sans text-[0.88rem] font-semibold tracking-[0.08em] uppercase text-white transition-all duration-[250ms] disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:-translate-y-px hover:shadow-[0_8px_24px_rgba(0,85,255,0.35),0_0_0_1px_rgba(0,212,255,0.15)] active:translate-y-0"
                 style={{ background: "linear-gradient(135deg,#0055ff 0%,#0099dd 100%)" }}
               >
@@ -418,8 +460,10 @@ export default function Home() {
             ) : (
               <button
                 type="button"
-                disabled={!canAdvance() || status === "loading"}
-                onClick={handleSubmit}
+                disabled={status === "loading"}
+                onClick={() => {
+                  if (validateStep()) handleSubmit();
+                }}
                 className="group relative flex-1 px-6 py-[15px] flex items-center justify-center gap-[10px] overflow-hidden rounded-[10px] font-sans text-[0.88rem] font-semibold tracking-[0.08em] uppercase text-white transition-all duration-[250ms] disabled:opacity-40 disabled:cursor-not-allowed hover:not-disabled:-translate-y-px hover:shadow-[0_8px_24px_rgba(0,85,255,0.35),0_0_0_1px_rgba(0,212,255,0.15)] active:translate-y-0"
                 style={{ background: "linear-gradient(135deg,#0055ff 0%,#0099dd 100%)" }}
               >
@@ -468,20 +512,32 @@ interface FieldWrapperProps {
   label: string;
   htmlFor: string;
   delay?: string;
+  error?: string;
   children: React.ReactNode;
 }
 
-function FieldWrapper({ label, htmlFor, delay = "0s", children }: FieldWrapperProps) {
+function FieldWrapper({ label, htmlFor, delay = "0s", error, children }: FieldWrapperProps) {
   return (
-    <div className="relative mb-2 group/field animate-fade-up" style={{ animationDelay: delay }}>
+    <div className="relative mb-5 group/field animate-fade-up" style={{ animationDelay: delay }}>
       <label
         htmlFor={htmlFor}
-        className="flex items-center gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] text-[#94a3b8] mb-2 transition-colors duration-200 group-focus-within/field:text-[#00d4ff]"
+        className={`flex items-center gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] mb-2 transition-colors duration-200 ${
+          error ? "text-red-400 group-focus-within/field:text-red-400" : "text-[#94a3b8] group-focus-within/field:text-[#00d4ff]"
+        }`}
       >
-        <span className="w-[5px] h-[5px] rounded-full bg-[#475569] transition-colors duration-200 group-focus-within/field:bg-[#00d4ff]" />
+        <span className={`w-[5px] h-[5px] rounded-full transition-colors duration-200 ${
+          error ? "bg-red-400 group-focus-within/field:bg-red-400" : "bg-[#475569] group-focus-within/field:bg-[#00d4ff]"
+        }`} />
         {label}
       </label>
-      {children}
+      <div className={error ? "[&>input]:border-red-500/50 [&>input]:bg-red-500/[0.04] [&>textarea]:border-red-500/50 [&>textarea]:bg-red-500/[0.04] [&>div>select]:border-red-500/50 [&>div>select]:bg-red-500/[0.04]" : ""}>
+        {children}
+      </div>
+      {error && (
+        <p className="absolute -bottom-[22px] left-0 text-[0.72rem] font-medium text-red-400 animate-fade-in">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

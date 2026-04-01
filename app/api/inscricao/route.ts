@@ -26,14 +26,16 @@ function validate(body: unknown): body is FormPayload {
   if (!body || typeof body !== "object") return false;
   const b = body as Record<string, unknown>;
   return (
-    typeof b.nome === "string" && b.nome.trim() !== "" &&
+    typeof b.nome === "string" && b.nome.trim().split(/\s+/).length >= 2 &&
     typeof b.ra === "string" && b.ra.trim() !== "" &&
     typeof b.curso === "string" && b.curso.trim() !== "" &&
     typeof b.ano === "string" && b.ano.trim() !== "" &&
-    typeof b.email === "string" && b.email.trim() !== "" &&
-    typeof b.telefone === "string" && b.telefone.trim() !== "" &&
+    typeof b.email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email.trim()) &&
+    typeof b.telefone === "string" && b.telefone.replace(/\D/g, "").length >= 10 &&
     typeof b.instagram === "string" &&
-    typeof b.data_nascimento === "string" && b.data_nascimento.trim() !== "" &&
+    typeof b.data_nascimento === "string" && b.data_nascimento.trim() !== "" && 
+    new Date(b.data_nascimento).getFullYear() >= 1950 && 
+    new Date(b.data_nascimento).getFullYear() <= new Date().getFullYear() - 15 &&
     typeof b.motivo_puc === "string" && b.motivo_puc.trim() !== "" &&
     typeof b.areas_interesse === "string" && b.areas_interesse.trim() !== "" &&
     typeof b.projetos === "string" && b.projetos.trim() !== "" &&
