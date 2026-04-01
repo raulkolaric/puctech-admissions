@@ -10,6 +10,7 @@ interface FormPayload {
   email: string;
   telefone: string;
   instagram: string;
+  data_nascimento: string;
   motivo_puc: string;
   areas_interesse: string;
   projetos: string;
@@ -31,6 +32,7 @@ function validate(body: unknown): body is FormPayload {
     typeof b.email === "string" && b.email.trim() !== "" &&
     typeof b.telefone === "string" && b.telefone.trim() !== "" &&
     typeof b.instagram === "string" &&
+    typeof b.data_nascimento === "string" && b.data_nascimento.trim() !== "" &&
     typeof b.motivo_puc === "string" && b.motivo_puc.trim() !== "" &&
     typeof b.areas_interesse === "string" && b.areas_interesse.trim() !== "" &&
     typeof b.projetos === "string" && b.projetos.trim() !== "" &&
@@ -98,7 +100,7 @@ export async function POST(req: NextRequest) {
   });
 
   const tab = process.env.GOOGLE_SHEET_TAB;
-  const range = tab ? `'${tab}'!A:P` : "A:P";
+  const range = tab ? `'${tab}'!A:Q` : "A:Q";
 
   console.log("[sheets] tab:", tab ?? "(using first sheet)");
   console.log("[sheets] range:", range);
@@ -119,6 +121,7 @@ export async function POST(req: NextRequest) {
           body.email.trim(),
           body.telefone.trim(),
           body.instagram.trim(),        // optional
+          body.data_nascimento.trim(),
           body.motivo_puc.trim(),
           body.areas_interesse.trim(),
           body.projetos.trim(),

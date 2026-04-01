@@ -14,6 +14,7 @@ export default function Home() {
   const [nome, setNome] = useState("");
   const [email, setEmail] = useState("");
   const [instagram, setInstagram] = useState("");
+  const [dataNascimento, setDataNascimento] = useState("");
 
   const [ra, setRa] = useState("");
   const [curso, setCurso] = useState("");
@@ -48,7 +49,7 @@ export default function Home() {
   /* ── Per-step validation ── */
   function canAdvance(): boolean {
     switch (step) {
-      case 1: return nome.trim() !== "" && email.trim() !== "";
+      case 1: return nome.trim() !== "" && email.trim() !== "" && dataNascimento !== "";
       case 2: return ra.trim() !== "" && curso !== "" && ano !== "" && telefone.trim() !== "";
       case 3: return motivoPuc.trim() !== "" && areasInteresse.trim() !== "" && projetos.trim() !== "" && experiencia.trim() !== "";
       case 4: return habilidades.trim() !== "" && softHardSkills.trim() !== "" && tempoLivre.trim() !== "" && areasOperacionais.length > 0;
@@ -66,7 +67,7 @@ export default function Home() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          nome, ra, curso, ano, email, telefone, instagram,
+          nome, ra, curso, ano, email, telefone, instagram, data_nascimento: dataNascimento,
           motivo_puc: motivoPuc,
           areas_interesse: areasInteresse,
           projetos, experiencia, habilidades,
@@ -83,7 +84,7 @@ export default function Home() {
 
       setStatus("success");
       // Reset everything
-      setNome(""); setEmail(""); setInstagram("");
+      setNome(""); setEmail(""); setInstagram(""); setDataNascimento("");
       setRa(""); setCurso(""); setAno(""); setTelefone("");
       setMotivoPuc(""); setAreasInteresse(""); setProjetos(""); setExperiencia("");
       setHabilidades(""); setSoftHardSkills(""); setTempoLivre("");
@@ -219,6 +220,10 @@ export default function Home() {
                 <FieldWrapper label="Qual seu Instagram?" htmlFor="instagram">
                   <input type="text" id="instagram" value={instagram} onChange={(e) => setInstagram(e.target.value)} className={inputClass} placeholder="@seuperfil" />
                 </FieldWrapper>
+
+                <FieldWrapper label="Data de Nascimento" htmlFor="dataNascimento">
+                  <input type="date" id="dataNascimento" required value={dataNascimento} onChange={(e) => setDataNascimento(e.target.value)} className={inputClass} style={{ colorScheme: "dark" }} />
+                </FieldWrapper>
               </>
             )}
 
@@ -295,11 +300,11 @@ export default function Home() {
             {/* STEP 4 — Habilidades */}
             {step === 4 && (
               <>
-                <FieldWrapper label="Quais habilidades você possui e acredita serem relevantes?" htmlFor="habilidades">
+                <FieldWrapper label="Quais habilidade voce possui e acredita serem relevantes? (hard skills e soft skills)" htmlFor="habilidades">
                   <textarea id="habilidades" required value={habilidades} onChange={(e) => setHabilidades(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
-                <FieldWrapper label="Quais são suas principais Soft-Skills e Hard-Skills?" htmlFor="soft_hard_skills">
+                <FieldWrapper label="Você tem disponibilidade para participar das reuniões semanais e eventos?" htmlFor="soft_hard_skills">
                   <textarea id="soft_hard_skills" required value={softHardSkills} onChange={(e) => setSoftHardSkills(e.target.value)} className={`${inputClass} resize-y min-h-[90px]`} />
                 </FieldWrapper>
 
