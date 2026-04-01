@@ -4,6 +4,42 @@ import { useState } from "react";
 
 type Status = "idle" | "loading" | "success" | "error";
 
+const FAQ_ITEMS: { q: string; a: string }[] = [
+  {
+    q: "O que é a PUC Tech?",
+    a: "A PUC Tech é a liga acadêmica de tecnologia da PUC-SP. Reunimos estudantes apaixonados por tech para colaborar em projetos reais, eventos e pesquisa aplicada.",
+  },
+  {
+    q: "Quem pode se inscrever?",
+    a: "Qualquer aluno regularmente matriculado na PUC-SP, independentemente do curso ou período.",
+  },
+  {
+    q: "Existe taxa de inscrição?",
+    a: "Não. A participação na liga é completamente gratuita.",
+  },
+  {
+    q: "Quando acontece a dinâmica presencial?",
+    a: "A dinâmica está prevista para o dia 18/04 (sábado). Reserve a data! Mais detalhes serão enviados por email após a primeira etapa.",
+  },
+  {
+    q: "Quantas vagas há disponíveis?",
+    a: "O número de vagas é limitado. A seleção é realizada com base nas respostas do formulário e no desempenho nas dinâmicas do processo seletivo.",
+  },
+  {
+    q: "Como saberei se fui selecionado?",
+    a: "Você receberá um email com o resultado após a primeira etapa. Fique atento à sua caixa de entrada (e ao spam).",
+  },
+  {
+    q: "Preciso ter experiência prévia em tecnologia?",
+    a: "Não é obrigatório. Buscamos pessoas curiosas, proativas e dispostas a aprender. A vontade de crescer vale mais que o currículo.",
+  },
+  {
+    q: "Qual é a frequência de reuniões?",
+    a: "Reuniões semanais aos sábados de manhã, alternando entre remota e presencial. Geralmente almoçamos juntos depois!",
+  },
+];
+
+
 const TOTAL_STEPS = 5;
 
 export default function Home() {
@@ -37,6 +73,10 @@ export default function Home() {
   const [status, setStatus] = useState<Status>("idle");
   const [errorMsg, setErrorMsg] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  /* ── FAQ state ── */
+  const [faqOpen, setFaqOpen] = useState(false);
+  const [openFaqItem, setOpenFaqItem] = useState<string | null>(null);
 
   /* ── Checkbox toggle logic ── */
   function handleAreaToggle(area: string) {
@@ -191,9 +231,34 @@ export default function Home() {
         />
       </div>
 
+      {/* ── FAQ mobile floating button ── */}
+      <div className="lg:hidden">
+        <button
+          id="faq-floating-btn"
+          type="button"
+          onClick={() => setFaqOpen(true)}
+          aria-label="Abrir perguntas frequentes"
+          className="fixed bottom-6 right-5 z-40 flex items-center gap-2 pl-4 pr-5 py-[11px] rounded-full text-[0.8rem] font-semibold tracking-[0.06em] uppercase text-white shadow-[0_4px_20px_rgba(0,85,255,0.4)] transition-all duration-200 hover:-translate-y-[2px] hover:shadow-[0_8px_28px_rgba(0,85,255,0.5)] active:translate-y-0"
+          style={{ background: "linear-gradient(135deg,#0055ff 0%,#0099dd 100%)" }}
+        >
+          <svg width="15" height="15" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.2} d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3m.08 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          FAQ
+        </button>
+
+        {/* Mobile FAQ drawer */}
+        <FaqDrawer
+          open={faqOpen}
+          onClose={() => setFaqOpen(false)}
+          openItem={openFaqItem}
+          onToggleItem={(q) => setOpenFaqItem((prev) => (prev === q ? null : q))}
+        />
+      </div>
+
       {/* ── Wrapper ── */}
       <div
-        className="relative z-10 grid w-full overflow-x-clip min-h-screen grid-cols-1 lg:grid-cols-[1fr_520px_1fr] touch-pan-y"
+        className="relative z-10 grid w-full overflow-x-clip min-h-screen grid-cols-1 lg:grid-cols-[1fr_520px_380px] touch-pan-y"
       >
         {/* ───── MOBILE HEADER (visible < lg) ───── */}
         <header className="flex flex-col items-center text-center px-6 pt-10 pb-6 lg:hidden">
@@ -554,11 +619,38 @@ export default function Home() {
         </main>
 
         {/* ───── MOBILE FOOTER (visible < lg) ───── */}
-        <footer className="flex flex-col items-center text-center px-6 pt-4 pb-10 lg:hidden">
+        <footer className="flex flex-col items-center text-center px-6 pt-4 pb-24 lg:hidden">
           <p className="text-[0.85rem] text-[#94a3b8] leading-[1.7] max-w-[360px]">
             Junte-se à liga de tecnologia da PUC e colabore em projetos reais, eventos e pesquisa aplicada junto a outros estudantes.
           </p>
         </footer>
+
+        {/* ─────────── RIGHT FAQ PANEL (desktop only) ─────────── */}
+        <aside className="hidden lg:flex flex-col py-[60px] pr-10 pl-6">
+          <div className="sticky top-[48px]">
+            {/* Panel header */}
+            <div className="mb-6">
+              <span className="flex items-center gap-[10px] font-mono text-[0.72rem] tracking-[0.18em] uppercase text-[#00d4ff] mb-4">
+                <span className="inline-block w-4 h-px bg-[#00d4ff]" />
+                Dúvidas Frequentes
+              </span>
+              <p className="text-[0.8rem] text-[#475569] leading-[1.6] max-w-[300px]">
+                Respostas rápidas para as perguntas mais comuns sobre o processo seletivo.
+              </p>
+            </div>
+
+            {/* Accordion */}
+            <div
+              className="rounded-2xl border border-white/[0.07] overflow-hidden"
+              style={{ background: "rgba(255,255,255,0.02)", backdropFilter: "blur(12px)" }}
+            >
+              <FaqAccordion
+                openItem={openFaqItem}
+                onToggleItem={(q) => setOpenFaqItem((prev) => (prev === q ? null : q))}
+              />
+            </div>
+          </div>
+        </aside>
       </div>
     </>
   );
@@ -617,13 +709,134 @@ function ChevronIcon() {
 }
 
 
-
-
 function Spinner() {
   return (
     <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
       <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
       <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4z" />
     </svg>
+  );
+}
+
+/* ─── FAQ Accordion (shared between desktop panel and mobile drawer) ─── */
+interface FaqAccordionProps {
+  openItem: string | null;
+  onToggleItem: (q: string) => void;
+}
+
+function FaqAccordion({ openItem, onToggleItem }: FaqAccordionProps) {
+  return (
+    <div>
+      {FAQ_ITEMS.map((item, idx) => {
+        const isOpen = openItem === item.q;
+        return (
+          <div
+            key={item.q}
+            className={`border-white/[0.06] ${
+              idx !== 0 ? "border-t" : ""
+            }`}
+          >
+            <button
+              type="button"
+              id={`faq-item-${idx}`}
+              onClick={() => onToggleItem(item.q)}
+              aria-expanded={isOpen}
+              className="w-full flex items-center justify-between gap-4 px-5 py-[15px] text-left transition-colors duration-150 hover:bg-white/[0.03] group"
+            >
+              <span
+                className={`text-[0.84rem] font-medium leading-snug transition-colors duration-200 ${
+                  isOpen ? "text-[#f8fafc]" : "text-[#94a3b8] group-hover:text-white/80"
+                }`}
+              >
+                {item.q}
+              </span>
+              <span
+                className={`flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center border transition-all duration-300 ${
+                  isOpen
+                    ? "border-[#00d4ff] bg-[rgba(0,212,255,0.1)] rotate-45"
+                    : "border-white/20 bg-white/[0.03] rotate-0"
+                }`}
+              >
+                <svg width="9" height="9" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+                  <path stroke={isOpen ? "#00d4ff" : "#94a3b8"} strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 5v14M5 12h14" />
+                </svg>
+              </span>
+            </button>
+
+            {/* Animated body — CSS max-height trick for smooth open/close */}
+            <div
+              style={{
+                maxHeight: isOpen ? "200px" : "0px",
+                overflow: "hidden",
+                transition: "max-height 0.3s cubic-bezier(0.4,0,0.2,1)",
+              }}
+            >
+              <p className="px-5 pb-[15px] pt-1 text-[0.82rem] text-[#64748b] leading-[1.7]">
+                {item.a}
+              </p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+/* ─── FAQ Drawer (mobile bottom-sheet) ─── */
+interface FaqDrawerProps {
+  open: boolean;
+  onClose: () => void;
+  openItem: string | null;
+  onToggleItem: (q: string) => void;
+}
+
+function FaqDrawer({ open, onClose, openItem, onToggleItem }: FaqDrawerProps) {
+  if (!open) return null;
+  return (
+    // Backdrop
+    <div
+      className="fixed inset-0 z-50 flex items-end animate-fade-in"
+      style={{ background: "rgba(2,6,23,0.75)", backdropFilter: "blur(4px)" }}
+      onClick={onClose}
+    >
+      {/* Sheet — stop propagation so tapping the sheet itself doesn't close */}
+      <div
+        className="w-full max-h-[78vh] overflow-y-auto rounded-t-2xl border-t border-white/[0.08] animate-slide-up"
+        style={{ background: "#05101f" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Drag handle */}
+        <div className="flex justify-center pt-3 pb-1">
+          <span className="w-10 h-1 rounded-full bg-white/20" />
+        </div>
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 pt-3 pb-4 border-b border-white/[0.06]">
+          <div>
+            <span className="flex items-center gap-[8px] font-mono text-[0.65rem] tracking-[0.18em] uppercase text-[#00d4ff] mb-1">
+              <span className="inline-block w-3 h-px bg-[#00d4ff]" />
+              Dúvidas Frequentes
+            </span>
+            <p className="text-[#f8fafc] text-[1rem] font-medium">Perguntas frequentes</p>
+          </div>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Fechar perguntas frequentes"
+            className="w-8 h-8 rounded-full flex items-center justify-center border border-white/10 text-[#94a3b8] transition-colors hover:border-white/20 hover:text-white"
+          >
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 6L6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Accordion */}
+        <FaqAccordion openItem={openItem} onToggleItem={onToggleItem} />
+
+        {/* Bottom safe area */}
+        <div className="h-8" />
+      </div>
+    </div>
   );
 }
