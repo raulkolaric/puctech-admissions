@@ -229,28 +229,34 @@ export default function Home() {
         {/* ─────────── FORM COLUMN ─────────── */}
         <main className="flex flex-col justify-center px-6 py-8 lg:px-10 lg:py-10">
 
-          {/* Form header — changes per step */}
-          <div className="mb-10 animate-fade-up" style={{ animationDelay: "0.05s" }}>
-            <p className="font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#475569] mb-4">
-              Etapa {step} de {TOTAL_STEPS}
-            </p>
-            <h2 className="text-2xl font-medium tracking-[-0.02em] text-[#f8fafc] mb-1">
-              {stepMeta[step].title}
-            </h2>
-            <p className="text-[0.83rem] text-[#94a3b8]">
-              {stepMeta[step].subtitle}
-            </p>
-          </div>
-
-          {/* ── Success banner ── */}
-          {status === "success" && (
-            <div className="mb-6 flex items-center gap-3 rounded-[10px] border border-[rgba(0,212,255,0.25)] bg-[rgba(0,212,255,0.06)] px-4 py-3 text-[0.83rem] text-[#00d4ff] backdrop-blur-sm">
-              <svg width="16" height="16" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              Inscrição enviada com sucesso!
+          {status === "success" ? (
+            <div className="flex flex-col items-center justify-center text-center animate-fade-up">
+              <div className="w-[84px] h-[84px] rounded-full bg-[rgba(0,212,255,0.06)] border border-[rgba(0,212,255,0.15)] flex items-center justify-center mb-8 shadow-[0_0_30px_rgba(0,212,255,0.1)]">
+                <svg width="40" height="40" fill="none" viewBox="0 0 24 24">
+                  <path stroke="#00d4ff" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-3xl font-light tracking-[-0.02em] text-[#f8fafc] mb-4">
+                Inscrição concluída!
+              </h2>
+              <p className="text-[#94a3b8] text-[0.95rem] leading-[1.7] max-w-[340px] mb-10">
+                Seus dados foram enviados com sucesso. Fique de olho no seu <strong className="text-[#f8fafc] text-[1.1rem]">email</strong> para as próximas etapas e já <strong className="text-[#f8fafc] text-[1.1rem]">reserve o seu sábado</strong> para a nossa dinâmica presencial!
+              </p>
             </div>
-          )}
+          ) : (
+            <>
+              {/* Form header — changes per step */}
+              <div className="mb-10 animate-fade-up" style={{ animationDelay: "0.05s" }}>
+                <p className="font-mono text-[0.65rem] tracking-[0.15em] uppercase text-[#475569] mb-4">
+                  Etapa {step} de {TOTAL_STEPS}
+                </p>
+                <h2 className="text-2xl font-medium tracking-[-0.02em] text-[#f8fafc] mb-1">
+                  {stepMeta[step].title}
+                </h2>
+                <p className="text-[0.83rem] text-[#94a3b8]">
+                  {stepMeta[step].subtitle}
+                </p>
+              </div>
 
           {/* ── Error banner ── */}
           {status === "error" && (
@@ -488,6 +494,8 @@ export default function Home() {
               </button>
             )}
           </div>
+            </>
+          )}
 
         </main>
 
