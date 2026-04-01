@@ -566,7 +566,7 @@ function FieldWrapper({ label, htmlFor, delay = "0s", error, children }: FieldWr
     <div className="relative mb-5 group/field animate-fade-up overflow-x-hidden" style={{ animationDelay: delay }}>
       <label
         htmlFor={htmlFor}
-        className={`flex items-start gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] mb-2 min-h-[28px] transition-colors duration-200 ${
+        className={`flex items-start gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] mb-2 min-h-[38px] transition-colors duration-200 ${
           error ? "text-red-400 group-focus-within/field:text-red-400" : "text-[#94a3b8] group-focus-within/field:text-[#00d4ff]"
         }`}
       >
