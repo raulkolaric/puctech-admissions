@@ -9,7 +9,7 @@ interface FormPayload {
   ano: string;
   email: string;
   telefone: string;
-  auxilio: string;
+  instagram: string;
   motivo_puc: string;
   areas_interesse: string;
   projetos: string;
@@ -30,7 +30,7 @@ function validate(body: unknown): body is FormPayload {
     typeof b.ano === "string" && b.ano.trim() !== "" &&
     typeof b.email === "string" && b.email.trim() !== "" &&
     typeof b.telefone === "string" && b.telefone.trim() !== "" &&
-    typeof b.auxilio === "string" &&
+    typeof b.instagram === "string" &&
     typeof b.motivo_puc === "string" && b.motivo_puc.trim() !== "" &&
     typeof b.areas_interesse === "string" && b.areas_interesse.trim() !== "" &&
     typeof b.projetos === "string" && b.projetos.trim() !== "" &&
@@ -95,7 +95,7 @@ export async function POST(req: NextRequest) {
           body.ano.trim(),
           body.email.trim(),
           body.telefone.trim(),
-          body.auxilio.trim(),        // optional but passed as string
+          body.instagram.trim(),        // optional
           body.motivo_puc.trim(),
           body.areas_interesse.trim(),
           body.projetos.trim(),
