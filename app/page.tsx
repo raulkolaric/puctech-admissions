@@ -563,7 +563,7 @@ interface FieldWrapperProps {
 
 function FieldWrapper({ label, htmlFor, delay = "0s", error, children }: FieldWrapperProps) {
   return (
-    <div className="relative mb-5 group/field animate-fade-up overflow-x-hidden" style={{ animationDelay: delay }}>
+    <div className="relative mb-5 group/field animate-fade-up" style={{ animationDelay: delay }}>
       <label
         htmlFor={htmlFor}
         className={`flex items-start gap-[6px] text-[0.7rem] font-semibold uppercase tracking-[0.12em] mb-2 min-h-[38px] transition-colors duration-200 ${
