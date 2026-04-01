@@ -77,6 +77,7 @@ export default function Home() {
   /* ── FAQ state ── */
   const [faqOpen, setFaqOpen] = useState(false);
   const [openFaqItem, setOpenFaqItem] = useState<string | null>(null);
+  const [faqPanelOpen, setFaqPanelOpen] = useState(true);
 
   /* ── Checkbox toggle logic ── */
   function handleAreaToggle(area: string) {
@@ -258,7 +259,7 @@ export default function Home() {
 
       {/* ── Wrapper ── */}
       <div
-        className="relative z-10 grid w-full overflow-x-clip min-h-screen grid-cols-1 lg:grid-cols-[1fr_520px_380px] touch-pan-y"
+        className="relative z-10 grid w-full h-screen overflow-hidden grid-cols-1 lg:grid-cols-[1fr_520px_1fr] touch-pan-y"
       >
         {/* ───── MOBILE HEADER (visible < lg) ───── */}
         <header className="flex flex-col items-center text-center px-6 pt-10 pb-6 lg:hidden">
@@ -307,7 +308,8 @@ export default function Home() {
         </aside>
 
         {/* ─────────── FORM COLUMN ─────────── */}
-        <main className="flex flex-col justify-center px-6 py-8 lg:px-10 lg:py-10">
+        <main className="h-full overflow-y-auto">
+          <div className="flex min-h-full flex-col justify-center px-6 py-8 lg:px-10 lg:py-10">
 
           {status === "success" ? (
             <div className="flex flex-col items-center justify-center text-center animate-fade-up">
@@ -616,6 +618,7 @@ export default function Home() {
             </>
           )}
 
+          </div>
         </main>
 
         {/* ───── MOBILE FOOTER (visible < lg) ───── */}
@@ -626,29 +629,60 @@ export default function Home() {
         </footer>
 
         {/* ─────────── RIGHT FAQ PANEL (desktop only) ─────────── */}
-        <aside className="hidden lg:flex flex-col py-[60px] pr-10 pl-6">
+        <aside className="hidden lg:flex flex-col py-[60px] pr-10 pl-6 h-full overflow-y-auto">
           <div className="sticky top-[48px]">
-            {/* Panel header */}
-            <div className="mb-6">
-              <span className="flex items-center gap-[10px] font-mono text-[0.72rem] tracking-[0.18em] uppercase text-[#00d4ff] mb-4">
+
+            {/* Panel header — always visible */}
+            <div className="flex items-start justify-between mb-4">
+              <span className="flex items-center gap-[10px] font-mono text-[0.72rem] tracking-[0.18em] uppercase text-[#00d4ff]">
                 <span className="inline-block w-4 h-px bg-[#00d4ff]" />
                 Dúvidas Frequentes
               </span>
-              <p className="text-[0.8rem] text-[#475569] leading-[1.6] max-w-[300px]">
-                Respostas rápidas para as perguntas mais comuns sobre o processo seletivo.
-              </p>
+              <button
+                type="button"
+                id="faq-panel-toggle"
+                onClick={() => setFaqPanelOpen((prev) => !prev)}
+                aria-expanded={faqPanelOpen}
+                aria-label={faqPanelOpen ? "Recolher FAQ" : "Expandir FAQ"}
+                className="flex-shrink-0 ml-3 w-6 h-6 rounded-full flex items-center justify-center border border-white/10 bg-white/[0.03] text-[#475569] transition-all duration-200 hover:border-white/20 hover:text-[#94a3b8]"
+              >
+                <svg
+                  width="10"
+                  height="10"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  style={{
+                    transform: faqPanelOpen ? "rotate(0deg)" : "rotate(-180deg)",
+                    transition: "transform 0.3s ease",
+                  }}
+                >
+                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
             </div>
 
-            {/* Accordion */}
+            {/* Collapsible body */}
             <div
-              className="rounded-2xl border border-white/[0.07] overflow-hidden"
-              style={{ background: "rgba(255,255,255,0.02)", backdropFilter: "blur(12px)" }}
+              style={{
+                maxHeight: faqPanelOpen ? "800px" : "0px",
+                overflow: "hidden",
+                transition: "max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+              }}
             >
-              <FaqAccordion
-                openItem={openFaqItem}
-                onToggleItem={(q) => setOpenFaqItem((prev) => (prev === q ? null : q))}
-              />
+              <p className="text-[0.8rem] text-[#475569] leading-[1.6] max-w-[300px] mb-6">
+                Respostas rápidas para as perguntas mais comuns sobre o processo seletivo.
+              </p>
+              <div
+                className="rounded-2xl border border-white/[0.07] overflow-hidden"
+                style={{ background: "rgba(255,255,255,0.02)", backdropFilter: "blur(12px)" }}
+              >
+                <FaqAccordion
+                  openItem={openFaqItem}
+                  onToggleItem={(q) => setOpenFaqItem((prev) => (prev === q ? null : q))}
+                />
+              </div>
             </div>
+
           </div>
         </aside>
       </div>
