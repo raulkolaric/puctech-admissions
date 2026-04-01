@@ -27,7 +27,7 @@ function validate(body: unknown): body is FormPayload {
   const b = body as Record<string, unknown>;
   return (
     typeof b.nome === "string" && b.nome.trim().split(/\s+/).length >= 2 &&
-    typeof b.ra === "string" && b.ra.trim() !== "" &&
+    typeof b.ra === "string" && /^\d{8}$/.test(b.ra.trim()) &&
     typeof b.curso === "string" && b.curso.trim() !== "" &&
     typeof b.ano === "string" && b.ano.trim() !== "" &&
     typeof b.email === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(b.email.trim()) &&
@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
         values: [[
           timestamp,
           body.nome.trim(),
-          body.ra.trim(),
+          `'${body.ra.trim()}`, // prefix with single quote to preserve leading zeros in Sheets
           body.curso.trim(),
           body.ano.trim(),
           body.email.trim(),

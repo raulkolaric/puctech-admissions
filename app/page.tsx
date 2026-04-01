@@ -69,6 +69,8 @@ export default function Home() {
       }
     } else if (step === 2) {
       if (!ra.trim()) newErrors.ra = "O RA é obrigatório.";
+      else if (!/^\d{8}$/.test(ra.trim())) newErrors.ra = "O RA deve ter exatamente 8 números (ex: 00123456).";
+      
       if (!curso) newErrors.curso = "Selecione um curso.";
       if (!ano) newErrors.ano = "Selecione um ano/período.";
       
