@@ -11,7 +11,6 @@
 
 import AdmissionForm from "./AdmissionForm";
 import AdmissionsClosed from "./AdmissionsClosed";
-import FAQ from "./components/FAQ";
 
 // Force dynamic rendering — never cache this page statically.
 // This ensures process.env.ADMISSIONS_OPEN is read on EVERY request.
@@ -23,9 +22,6 @@ export default function Home() {
   return (
     <div className="relative min-h-screen">
       {isOpen ? <AdmissionForm /> : <AdmissionsClosed />}
-      
-      {/* FAQ is rendered on both states as requested */}
-      <FAQ />
     </div>
   );
 }
