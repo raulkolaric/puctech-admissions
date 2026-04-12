@@ -1,36 +1,41 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PUC-TECH Admissions Form
 
-## Getting Started
+This repository contains the web application used for managing the admissions process for PUC-TECH, the technology academic league of PUC-SP. It provides a guided, step-by-step form for prospective members to apply, and directly integrates with Google Sheets to securely store the applicant responses.
 
-First, run the development server:
+## Key Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Multi-Step Application Form**: A 5-step form flow covering personal information, academic details, interests, skills, and expectations. Built with client-side validation to ensure clean data entry.
+- **Google Sheets Integration**: Automatically appends new applications directly into a configured Google Sheet using Google Service Account credentials.
+- **Dynamic Admissions Toggle (Kill Switch)**: Uses a server-side environment variable (`ADMISSIONS_OPEN`) to instantly toggle the website between an active application form and an "Admissions Closed" state, avoiding the need for manual code deployment when deadlines pass.
+- **FAQ Component**: An accessible, persistent Frequently Asked Questions section available on both the open form and the closed state page.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Next.js (App Router)
+- React
+- Tailwind CSS
+- TypeScript
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Local Development
 
-## Learn More
+1. **Clone the repository**
+2. **Install dependencies**:
+   ```bash
+   npm install
+   ```
+3. **Configure Environment Variables**:
+   Copy the example environment file and fill in your actual credentials.
+   ```bash
+   cp .env.local.example .env.local
+   ```
+   You will need a Google Service Account with Editor access to your specific Google Sheet. The credentials and Sheet ID must be placed in `.env.local`. 
 
-To learn more about Next.js, take a look at the following resources:
+4. **Run the development server**:
+   ```bash
+   npm run dev
+   ```
+   Open `http://localhost:3000` in your browser. To test the closed state, set `ADMISSIONS_OPEN=false` in your `.env.local` file.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The application is built for Vercel. Ensure you define all environment variables in your Vercel project settings prior to deployment. Remember that changing `ADMISSIONS_OPEN` in the Vercel dashboard will apply the open or closed state instantly to the live environment.
