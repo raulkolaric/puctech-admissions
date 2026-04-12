@@ -50,6 +50,14 @@ function validate(body: unknown): body is FormPayload {
 
 // ── Route handler ────────────────────────────────────────────────────────────
 export async function POST(req: NextRequest) {
+  // 0. Kill Switch — reject submissions when admissions are closed
+  if (process.env.ADMISSIONS_OPEN !== "true") {
+    return NextResponse.json(
+      { error: "As inscrições estão encerradas." },
+      { status: 403 }
+    );
+  }
+
   // 1. Parse body
   let body: unknown;
   try {
